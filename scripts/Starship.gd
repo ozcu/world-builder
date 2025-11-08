@@ -13,7 +13,7 @@ func _ready() -> void:
 	# Set up RigidBody2D properties
 	gravity_scale = 0.0  # No gravity in space
 	linear_damp = 0.5
-	angular_damp = 2.0
+	angular_damp = 10.0  # High damping to prevent rotation
 	lock_rotation = true  # Prevent physics from rotating, we control it manually
 
 func _process(delta: float) -> void:
@@ -31,11 +31,14 @@ func _process(delta: float) -> void:
 	elif Input.is_action_pressed("ui_down"):
 		thrust_amount = -0.5  # Reverse thrust is weaker
 
-	# Apply rotation
+	# Apply rotation directly
 	if rotation_input != 0.0:
 		rotation += rotation_input * rotation_speed * delta
 
 func _physics_process(delta: float) -> void:
+	# Force angular velocity to zero (prevent physics rotation)
+	angular_velocity = 0.0
+
 	# Apply thrust in the direction the ship is facing
 	if thrust_amount != 0.0:
 		var thrust_direction = Vector2(0, -1).rotated(rotation)  # Ship points up
