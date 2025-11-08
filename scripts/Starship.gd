@@ -5,6 +5,7 @@ extends CharacterBody2D
 @export var max_speed: float = 400.0
 @export var rotation_speed: float = 2.5
 @export var drag: float = 0.98  # Friction in space
+@export var mass: float = 1000.0  # Ship mass for collision physics
 
 var ship_velocity: Vector2 = Vector2.ZERO
 var thrust_amount: float = 0.0
@@ -53,8 +54,45 @@ func _physics_process(delta: float) -> void:
 	velocity = ship_velocity
 	move_and_slide()
 
+	# Handle collisions with other ships
+	_handle_collisions()
+
 	# Update thruster visibility based on thrust and speed
 	_update_thrusters()
+
+func _handle_collisions() -> void:
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+
+		# Check if we collided with another ship
+		if collider is CharacterBody2D and (collider.name.begins_with("NPCShip") or collider.name.begins_with("Starship")):
+			# Get the other ship's mass and velocity
+			var other_mass = collider.get("mass")
+			if other_mass == null:
+				other_mass = 500.0  # Default mass if not set
+
+			var other_velocity = Vector2.ZERO
+			if collider.has_method("get_ship_velocity"):
+				other_velocity = collider.get_ship_velocity()
+			elif collider.get("ship_velocity") != null:
+				other_velocity = collider.get("ship_velocity")
+
+			# Calculate collision normal and relative velocity
+			var collision_normal = collision.get_normal()
+			var relative_velocity = ship_velocity - other_velocity
+
+			# Only apply force if ships are moving toward each other
+			var closing_speed = relative_velocity.dot(collision_normal)
+			if closing_speed < 0:
+				# Apply momentum-based collision response
+				# Using coefficient of restitution (bounciness) of 0.5
+				var restitution = 0.5
+				var impulse_magnitude = -(1 + restitution) * closing_speed / (1.0/mass + 1.0/other_mass)
+
+				# Apply impulse to this ship
+				var impulse = collision_normal * impulse_magnitude / mass
+				ship_velocity += impulse
 
 func _update_thrusters() -> void:
 	var speed_ratio = ship_velocity.length() / max_speed

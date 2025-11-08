@@ -6,7 +6,7 @@
 
 [node name="Starship" type="CharacterBody2D"]
 collision_layer = 1
-collision_mask = 7
+collision_mask = 5
 script = ExtResource("1_starship")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
