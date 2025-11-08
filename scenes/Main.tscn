@@ -43,7 +43,7 @@ position = Vector2(1800, 1600)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(2048, 2048)
-zoom = Vector2(0.25, 0.25)
+zoom = Vector2(0.22, 0.22)
 
 [node name="StarshipHUD" parent="." instance=ExtResource("5_hud")]
 
