@@ -31,7 +31,7 @@ func _find_hubs() -> void:
 		_pick_random_target()
 
 func _collect_hubs(node: Node) -> void:
-	if node.name.begins_with("Starhub"):
+	if node.name.begins_with("SpaceStation"):
 		hubs.append(node)
 	for child in node.get_children():
 		_collect_hubs(child)

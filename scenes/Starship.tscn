@@ -1,30 +1,31 @@
 [gd_scene load_steps=4 format=3 uid="uid://b9m4k5n6pqrst"]
 
 [ext_resource type="Script" uid="uid://cq5h8m9n3kptx" path="res://scripts/Starship.gd" id="1_starship"]
-[ext_resource type="Texture2D" uid="uid://starship_detailed_01" path="res://assets/textures/starship_detailed.svg" id="2_texture"]
-[ext_resource type="Texture2D" uid="uid://thruster_flame_01" path="res://assets/textures/thruster.svg" id="3_thruster"]
+[ext_resource type="Texture2D" uid="uid://bqpjbqetjeixx" path="res://assets/textures/player-ship.png" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://k4l80gdocyhc" path="res://assets/textures/thruster.svg" id="3_thruster"]
 
 [node name="Starship" type="CharacterBody2D"]
 script = ExtResource("1_starship")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.8, 0.8)
 texture = ExtResource("2_texture")
 
 [node name="ThrusterLeft" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(-5, 27)
+position = Vector2(-8, 35)
 scale = Vector2(0.5, 0.6)
 texture = ExtResource("3_thruster")
 
 [node name="ThrusterCenter" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(0, 27)
+position = Vector2(0, 35)
 scale = Vector2(0.4, 0.6)
 texture = ExtResource("3_thruster")
 
 [node name="ThrusterRight" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(5, 27)
+position = Vector2(8, 35)
 scale = Vector2(0.5, 0.6)
 texture = ExtResource("3_thruster")
 

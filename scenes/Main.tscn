@@ -1,46 +1,47 @@
-[gd_scene load_steps=9 format=3 uid="uid://dpqo64f6h1bqx"]
+[gd_scene load_steps=12 format=3 uid="uid://dpqo64f6h1bqx"]
 
 [ext_resource type="Script" uid="uid://b4xtnfl6pe464" path="res://scripts/SolarSystem.gd" id="1_solar"]
 [ext_resource type="PackedScene" path="res://scenes/Planet2D.tscn" id="2_planet"]
 [ext_resource type="PackedScene" path="res://scenes/Sun2D.tscn" id="3_sun"]
 [ext_resource type="PackedScene" uid="uid://b9m4k5n6pqrst" path="res://scenes/Starship.tscn" id="4_starship"]
 [ext_resource type="PackedScene" uid="uid://c7m8n9p0qrstu" path="res://scenes/StarshipHUD.tscn" id="5_hud"]
-[ext_resource type="Material" path="res://assets/materials/starfield_material.tres" id="6_starfield"]
-[ext_resource type="PackedScene" uid="uid://starhub_scene_01" path="res://scenes/Starhub.tscn" id="7_starhub"]
-[ext_resource type="PackedScene" uid="uid://npcship_scene_01" path="res://scenes/NPCShip.tscn" id="8_npcship"]
+[ext_resource type="Texture2D" path="res://assets/textures/star-background.jpg" id="6_starbackground"]
+[ext_resource type="PackedScene" uid="uid://starhub_scene_01" path="res://scenes/SpaceStation.tscn" id="7_station"]
+[ext_resource type="PackedScene" uid="uid://npcship1_scene" path="res://scenes/NPCShip1.tscn" id="8_npcship1"]
+[ext_resource type="PackedScene" uid="uid://npcship2_scene" path="res://scenes/NPCShip2.tscn" id="9_npcship2"]
+[ext_resource type="PackedScene" uid="uid://npcship3_scene" path="res://scenes/NPCShip3.tscn" id="10_npcship3"]
+[ext_resource type="PackedScene" uid="uid://npcship4_scene" path="res://scenes/NPCShip4.tscn" id="11_npcship4"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_solar")
 
-[node name="StarfieldBackground" type="ColorRect" parent="."]
+[node name="StarBackground" type="Sprite2D" parent="."]
 z_index = -100
-offset_right = 4096.0
-offset_bottom = 4096.0
-mouse_filter = 2
-material = ExtResource("6_starfield")
+position = Vector2(2048, 2048)
+texture = ExtResource("6_starbackground")
 
 [node name="Planet2D3" parent="." instance=ExtResource("2_planet")]
 position = Vector2(210, 534)
-scale = Vector2(1.35, 1.35)
+scale = Vector2(0.67, 0.67)
 archetype = "Desert/Mars"
 
 [node name="Planet2D" parent="." instance=ExtResource("2_planet")]
 position = Vector2(769, 578)
-scale = Vector2(1.35, 1.35)
+scale = Vector2(0.67, 0.67)
 archetype = "Gas/Saturn"
 
 [node name="Planet2D2" parent="." instance=ExtResource("2_planet")]
 position = Vector2(84, 146)
-scale = Vector2(1.35, 1.35)
+scale = Vector2(0.67, 0.67)
 archetype = "Ice"
 
 [node name="Planet2D4" parent="." instance=ExtResource("2_planet")]
 position = Vector2(926, 324)
-scale = Vector2(1.35, 1.35)
+scale = Vector2(0.67, 0.67)
 
 [node name="Sun2D" parent="." instance=ExtResource("3_sun")]
 position = Vector2(576, 324)
-scale = Vector2(1.35, 1.35)
+scale = Vector2(0.67, 0.67)
 
 [node name="Starship" parent="." instance=ExtResource("4_starship")]
 position = Vector2(400, 200)
@@ -50,29 +51,29 @@ position = Vector2(576, 324)
 
 [node name="StarshipHUD" parent="." instance=ExtResource("5_hud")]
 
-[node name="Starhub1" parent="." instance=ExtResource("7_starhub")]
+[node name="SpaceStation1" parent="." instance=ExtResource("7_station")]
 position = Vector2(950, 150)
 
-[node name="Starhub2" parent="." instance=ExtResource("7_starhub")]
+[node name="SpaceStation2" parent="." instance=ExtResource("7_station")]
 position = Vector2(200, 300)
 
-[node name="Starhub3" parent="." instance=ExtResource("7_starhub")]
+[node name="SpaceStation3" parent="." instance=ExtResource("7_station")]
 position = Vector2(800, 500)
 
-[node name="Starhub4" parent="." instance=ExtResource("7_starhub")]
+[node name="SpaceStation4" parent="." instance=ExtResource("7_station")]
 position = Vector2(350, 600)
 
-[node name="NPCShip1" parent="." instance=ExtResource("8_npcship")]
+[node name="NPCShip1" parent="." instance=ExtResource("8_npcship1")]
 position = Vector2(900, 200)
 
-[node name="NPCShip2" parent="." instance=ExtResource("8_npcship")]
+[node name="NPCShip2" parent="." instance=ExtResource("9_npcship2")]
 position = Vector2(250, 350)
 
-[node name="NPCShip3" parent="." instance=ExtResource("8_npcship")]
+[node name="NPCShip3" parent="." instance=ExtResource("10_npcship3")]
 position = Vector2(750, 450)
 
-[node name="NPCShip4" parent="." instance=ExtResource("8_npcship")]
+[node name="NPCShip4" parent="." instance=ExtResource("11_npcship4")]
 position = Vector2(400, 550)
 
-[node name="NPCShip5" parent="." instance=ExtResource("8_npcship")]
+[node name="NPCShip5" parent="." instance=ExtResource("8_npcship1")]
 position = Vector2(600, 250)
