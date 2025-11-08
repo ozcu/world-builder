@@ -87,20 +87,17 @@ func _handle_collisions() -> void:
 			var collision_normal = collision.get_normal()
 			var relative_velocity = ship_velocity - other_velocity
 
-			# Calculate collision response
+			# Only apply force if moving toward the object
 			var closing_speed = relative_velocity.dot(collision_normal)
+			if closing_speed < 0:
+				# Apply momentum-based collision response
+				# Using coefficient of restitution (bounciness) of 0.5
+				var restitution = 0.5
+				var impulse_magnitude = -(1 + restitution) * closing_speed / (1.0/mass + 1.0/other_mass)
 
-			# Apply momentum-based collision response
-			# Using coefficient of restitution (bounciness) of 0.8 for more bounce
-			var restitution = 0.8
-			var impulse_magnitude = -(1 + restitution) * closing_speed / (1.0/mass + 1.0/other_mass)
-
-			# Apply impulse to this ship
-			var impulse = collision_normal * impulse_magnitude / mass
-			ship_velocity += impulse
-
-			# Also apply immediate velocity adjustment to prevent sticking
-			velocity = ship_velocity
+				# Apply impulse to this ship
+				var impulse = collision_normal * impulse_magnitude / mass
+				ship_velocity += impulse
 
 func _update_thrusters() -> void:
 	var speed_ratio = ship_velocity.length() / max_speed
