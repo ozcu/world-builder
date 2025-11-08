@@ -1,9 +1,7 @@
 # res://scripts/StarshipHUD.gd
 extends CanvasLayer
 
-@onready var velocity_label: Label = $MarginContainer/VBoxContainer/VelocityLabel
 @onready var speed_label: Label = $MarginContainer/VBoxContainer/SpeedLabel
-@onready var ship_indicator: Sprite2D = $MarginContainer/VBoxContainer/ShipIndicator/Sprite2D
 
 var starship: RigidBody2D = null
 
@@ -30,14 +28,6 @@ func _process(_delta: float) -> void:
 	if starship == null or !is_instance_valid(starship):
 		return
 
-	if starship.has_method("get_velocity"):
-		var vel: Vector2 = starship.get_velocity()
+	if starship.has_method("get_speed"):
 		var speed: float = starship.get_speed()
-
-		# Update labels
-		velocity_label.text = "Velocity: (%.1f, %.1f)" % [vel.x, vel.y]
 		speed_label.text = "Speed: %.1f m/s" % speed
-
-		# Rotate ship indicator to match velocity direction
-		if vel.length() > 1.0:
-			ship_indicator.rotation = vel.angle() + PI / 2

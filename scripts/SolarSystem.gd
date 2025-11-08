@@ -4,11 +4,16 @@ extends Node2D
 @export var sun_position: Vector2 = Vector2(576, 324)
 @export var camera_margin: float = 150.0
 @export var num_planets: int = 3
+@export var camera_speed: float = 300.0
+@export var zoom_speed: float = 0.1
+@export var min_zoom: float = 0.1
+@export var max_zoom: float = 5.0
 
 @onready var camera: Camera2D = $Camera2D
 @onready var sun: Node2D = $Sun2D
 
 var orbital_bodies: Array[Node2D] = []
+var camera_velocity: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	if sun:
@@ -21,10 +26,11 @@ func _ready() -> void:
 
 	call_deferred("_adjust_camera")
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if orbital_bodies.is_empty():
 		return
 	_update_planet_lighting()
+	_handle_camera_input(delta)
 
 func _update_planet_lighting() -> void:
 	for orbital in orbital_bodies:
@@ -79,3 +85,40 @@ func _adjust_camera() -> void:
 	# Zoom out by 2x (divide zoom by 2)
 	camera.zoom = Vector2(zoom_value, zoom_value) * 0.5
 	camera.position = (min_pos + max_pos) / 2.0
+
+func _handle_camera_input(delta: float) -> void:
+	# WASD camera movement
+	camera_velocity = Vector2.ZERO
+
+	if Input.is_action_pressed("ui_text_indent"):  # D key
+		camera_velocity.x += 1
+	if Input.is_action_pressed("ui_text_dedent"):  # A key (not standard, will use direct key check)
+		camera_velocity.x -= 1
+
+	# Check WASD keys directly
+	if Input.is_key_pressed(KEY_W):
+		camera_velocity.y -= 1
+	if Input.is_key_pressed(KEY_S):
+		camera_velocity.y += 1
+	if Input.is_key_pressed(KEY_A):
+		camera_velocity.x -= 1
+	if Input.is_key_pressed(KEY_D):
+		camera_velocity.x += 1
+
+	# Normalize and apply camera speed
+	if camera_velocity.length() > 0:
+		camera_velocity = camera_velocity.normalized() * camera_speed
+		# Adjust for zoom level (move faster when zoomed out)
+		camera.position += camera_velocity * delta / camera.zoom.x
+
+func _input(event: InputEvent) -> void:
+	# Mouse wheel zoom
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+			var new_zoom = camera.zoom.x + zoom_speed
+			new_zoom = clamp(new_zoom, min_zoom, max_zoom)
+			camera.zoom = Vector2(new_zoom, new_zoom)
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+			var new_zoom = camera.zoom.x - zoom_speed
+			new_zoom = clamp(new_zoom, min_zoom, max_zoom)
+			camera.zoom = Vector2(new_zoom, new_zoom)
