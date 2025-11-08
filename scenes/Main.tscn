@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dpqo64f6h1bqx"]
+[gd_scene load_steps=6 format=3 uid="uid://dpqo64f6h1bqx"]
 
 [ext_resource type="Script" uid="uid://b4xtnfl6pe464" path="res://scripts/SolarSystem.gd" id="1_solar"]
 [ext_resource type="PackedScene" path="res://scenes/Planet2D.tscn" id="2_planet"]
 [ext_resource type="PackedScene" path="res://scenes/Sun2D.tscn" id="3_sun"]
+[ext_resource type="PackedScene" uid="uid://b9m4k5n6pqrst" path="res://scenes/Starship.tscn" id="4_starship"]
+[ext_resource type="PackedScene" uid="uid://c7m8n9p0qrstu" path="res://scenes/StarshipHUD.tscn" id="5_hud"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_solar")
@@ -25,5 +27,10 @@ position = Vector2(926, 324)
 [node name="Sun2D" parent="." instance=ExtResource("3_sun")]
 position = Vector2(576, 324)
 
+[node name="Starship" parent="." instance=ExtResource("4_starship")]
+position = Vector2(400, 200)
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 324)
+
+[node name="StarshipHUD" parent="." instance=ExtResource("5_hud")]
