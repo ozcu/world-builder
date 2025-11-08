@@ -27,10 +27,12 @@ func _ready() -> void:
 	call_deferred("_adjust_camera")
 
 func _process(delta: float) -> void:
-	if orbital_bodies.is_empty():
-		return
-	_update_planet_lighting()
+	# Always handle camera input
 	_handle_camera_input(delta)
+
+	# Update planet lighting only if we have orbital bodies
+	if !orbital_bodies.is_empty():
+		_update_planet_lighting()
 
 func _update_planet_lighting() -> void:
 	for orbital in orbital_bodies:
