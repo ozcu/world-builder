@@ -1,13 +1,32 @@
-[gd_scene load_steps=3 format=3 uid="uid://b9m4k5n6pqrst"]
+[gd_scene load_steps=4 format=3 uid="uid://b9m4k5n6pqrst"]
 
 [ext_resource type="Script" uid="uid://cq5h8m9n3kptx" path="res://scripts/Starship.gd" id="1_starship"]
-[ext_resource type="Texture2D" uid="uid://c8q4k7n2m5pjr" path="res://assets/textures/starship.svg" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://starship_detailed_01" path="res://assets/textures/starship_detailed.svg" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://thruster_flame_01" path="res://assets/textures/thruster.svg" id="3_thruster"]
 
 [node name="Starship" type="CharacterBody2D"]
 script = ExtResource("1_starship")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_texture")
+
+[node name="ThrusterLeft" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(-5, 27)
+scale = Vector2(0.5, 0.6)
+texture = ExtResource("3_thruster")
+
+[node name="ThrusterCenter" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(0, 27)
+scale = Vector2(0.4, 0.6)
+texture = ExtResource("3_thruster")
+
+[node name="ThrusterRight" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(5, 27)
+scale = Vector2(0.5, 0.6)
+texture = ExtResource("3_thruster")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-14, -24, 14, -24, 14, 16, 8, 24, -8, 24, -14, 16)

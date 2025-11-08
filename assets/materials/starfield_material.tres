@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://shaders/Starfield.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/star_density = 0.015
+shader_parameter/star_brightness = 1.2
+shader_parameter/scroll_speed = Vector2(0, 0)
+shader_parameter/time_scale = 0.1

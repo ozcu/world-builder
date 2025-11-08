@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <radialGradient id="hubGlow">
+      <stop offset="0%" style="stop-color:#4488FF;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#2244AA;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Central hub structure -->
+  <g transform="translate(60, 60)">
+    <!-- Outer glow -->
+    <circle cx="0" cy="0" r="50" fill="url(#hubGlow)" opacity="0.4"/>
+
+    <!-- Rotating ring -->
+    <ellipse cx="0" cy="0" rx="35" ry="8" fill="none" stroke="#6699CC" stroke-width="2" opacity="0.7"/>
+    <ellipse cx="0" cy="0" rx="35" ry="8" fill="none" stroke="#88BBFF" stroke-width="1" opacity="0.9"  transform="rotate(60)"/>
+    <ellipse cx="0" cy="0" rx="35" ry="8" fill="none" stroke="#88BBFF" stroke-width="1" opacity="0.9" transform="rotate(120)"/>
+
+    <!-- Spokes/connectors -->
+    <line x1="-30" y1="0" x2="-15" y2="0" stroke="#7799BB" stroke-width="2"/>
+    <line x1="30" y1="0" x2="15" y2="0" stroke="#7799BB" stroke-width="2"/>
+    <line x1="0" y1="-30" x2="0" y2="-15" stroke="#7799BB" stroke-width="2"/>
+    <line x1="0" y1="30" x2="0" y2="15" stroke="#7799BB" stroke-width="2"/>
+
+    <!-- Central core -->
+    <circle cx="0" cy="0" r="15" fill="#556677" stroke="#88AACC" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="12" fill="#667788" stroke="#99BBDD" stroke-width="1"/>
+
+    <!-- Core details -->
+    <circle cx="0" cy="0" r="8" fill="#778899"/>
+    <circle cx="0" cy="-3" r="3" fill="#4488DD" opacity="0.8"/>
+    <circle cx="0" cy="3" r="2" fill="#44DD88" opacity="0.8"/>
+
+    <!-- Docking ports -->
+    <rect x="-18" y="-3" width="6" height="6" fill="#667788" stroke="#88AACC" stroke-width="0.5"/>
+    <rect x="12" y="-3" width="6" height="6" fill="#667788" stroke="#88AACC" stroke-width="0.5"/>
+    <rect x="-3" y="-18" width="6" height="6" fill="#667788" stroke="#88AACC" stroke-width="0.5"/>
+    <rect x="-3" y="12" width="6" height="6" fill="#667788" stroke="#88AACC" stroke-width="0.5"/>
+
+    <!-- Navigation lights -->
+    <circle cx="-30" cy="0" r="2" fill="#FF4444" opacity="0.9"/>
+    <circle cx="30" cy="0" r="2" fill="#44FF44" opacity="0.9"/>
+    <circle cx="0" cy="-30" r="2" fill="#FFAA44" opacity="0.9"/>
+    <circle cx="0" cy="30" r="2" fill="#44AAFF" opacity="0.9"/>
+
+    <!-- Solar panels -->
+    <rect x="-45" y="-6" width="10" height="12" fill="#334455" stroke="#5577AA" stroke-width="0.5"/>
+    <rect x="35" y="-6" width="10" height="12" fill="#334455" stroke="#5577AA" stroke-width="0.5"/>
+
+    <!-- Panel details (cells) -->
+    <line x1="-45" y1="-2" x2="-35" y2="-2" stroke="#4466AA" stroke-width="0.3"/>
+    <line x1="-45" y1="2" x2="-35" y2="2" stroke="#4466AA" stroke-width="0.3"/>
+    <line x1="35" y1="-2" x2="45" y2="-2" stroke="#4466AA" stroke-width="0.3"/>
+    <line x1="35" y1="2" x2="45" y2="2" stroke="#4466AA" stroke-width="0.3"/>
+  </g>
+</svg>

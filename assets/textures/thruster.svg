@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 48" width="32" height="48">
+  <!-- Thruster flame effect -->
+  <defs>
+    <linearGradient id="flameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#88CCFF;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#4499FF;stop-opacity:0.9" />
+      <stop offset="70%" style="stop-color:#2266DD;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#1144AA;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Main flame -->
+  <ellipse cx="16" cy="8" rx="10" ry="12" fill="url(#flameGrad)" opacity="0.9"/>
+  <ellipse cx="16" cy="12" rx="8" ry="16" fill="url(#flameGrad)" opacity="0.8"/>
+  <ellipse cx="16" cy="16" rx="6" ry="20" fill="url(#flameGrad)" opacity="0.7"/>
+
+  <!-- Core glow -->
+  <ellipse cx="16" cy="6" rx="6" ry="6" fill="#AADDFF" opacity="0.9"/>
+  <ellipse cx="16" cy="6" rx="4" ry="4" fill="#EEFFFF" opacity="1"/>
+</svg>
