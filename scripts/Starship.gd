@@ -3,11 +3,11 @@ extends RigidBody2D
 
 @export var acceleration: float = 500.0
 @export var max_speed: float = 400.0
-@export var rotation_speed: float = 3.0
+@export var rotation_speed: float = 2.5
 @export var drag: float = 0.98  # Friction in space
 
 var velocity: Vector2 = Vector2.ZERO
-var thrust_input: Vector2 = Vector2.ZERO
+var thrust_amount: float = 0.0
 
 func _ready() -> void:
 	# Set up RigidBody2D properties
@@ -16,26 +16,29 @@ func _ready() -> void:
 	angular_damp = 2.0
 
 func _process(_delta: float) -> void:
-	# Get input from arrow keys
-	thrust_input = Vector2.ZERO
-
-	if Input.is_action_pressed("ui_up"):
-		thrust_input.y -= 1
-	if Input.is_action_pressed("ui_down"):
-		thrust_input.y += 1
+	# Get rotation input from left/right arrows
+	var rotation_input: float = 0.0
 	if Input.is_action_pressed("ui_left"):
-		thrust_input.x -= 1
+		rotation_input -= 1.0
 	if Input.is_action_pressed("ui_right"):
-		thrust_input.x += 1
+		rotation_input += 1.0
 
-	# Normalize to prevent faster diagonal movement
-	if thrust_input.length() > 0:
-		thrust_input = thrust_input.normalized()
+	# Get thrust input from up/down arrows
+	thrust_amount = 0.0
+	if Input.is_action_pressed("ui_up"):
+		thrust_amount = 1.0
+	elif Input.is_action_pressed("ui_down"):
+		thrust_amount = -0.5  # Reverse thrust is weaker
+
+	# Apply rotation
+	if rotation_input != 0.0:
+		rotation += rotation_input * rotation_speed * _delta
 
 func _physics_process(delta: float) -> void:
-	# Apply acceleration based on input
-	if thrust_input.length() > 0:
-		velocity += thrust_input * acceleration * delta
+	# Apply thrust in the direction the ship is facing
+	if thrust_amount != 0.0:
+		var thrust_direction = Vector2(0, -1).rotated(rotation)  # Ship points up
+		velocity += thrust_direction * thrust_amount * acceleration * delta
 
 	# Apply drag
 	velocity *= drag
@@ -46,11 +49,6 @@ func _physics_process(delta: float) -> void:
 
 	# Apply velocity to RigidBody2D
 	linear_velocity = velocity
-
-	# Rotate ship to face movement direction
-	if velocity.length() > 10.0:  # Only rotate when moving
-		var target_rotation = velocity.angle() + PI / 2  # +90 degrees because ship points up
-		rotation = lerp_angle(rotation, target_rotation, rotation_speed * delta)
 
 func get_velocity() -> Vector2:
 	return velocity
