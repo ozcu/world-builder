@@ -100,24 +100,29 @@ func _handle_collisions() -> void:
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
 
-		# Check if we collided with another ship
-		if collider is CharacterBody2D and (collider.name.begins_with("NPCShip") or collider.name.begins_with("Starship")):
-			# Get the other ship's mass and velocity
+		# Check if we collided with another ship or space station
+		var is_ship = collider is CharacterBody2D and (collider.name.begins_with("NPCShip") or collider.name.begins_with("Starship"))
+		var is_station = collider is StaticBody2D and collider.name.begins_with("SpaceStation")
+
+		if is_ship or is_station:
+			# Get the other object's mass and velocity
 			var other_mass = collider.get("mass")
 			if other_mass == null:
 				other_mass = 500.0  # Default mass if not set
 
 			var other_velocity = Vector2.ZERO
-			if collider.has_method("get_ship_velocity"):
-				other_velocity = collider.get_ship_velocity()
-			elif collider.get("ship_velocity") != null:
-				other_velocity = collider.get("ship_velocity")
+			# Static bodies don't move
+			if is_ship:
+				if collider.has_method("get_ship_velocity"):
+					other_velocity = collider.get_ship_velocity()
+				elif collider.get("ship_velocity") != null:
+					other_velocity = collider.get("ship_velocity")
 
 			# Calculate collision normal and relative velocity
 			var collision_normal = collision.get_normal()
 			var relative_velocity = ship_velocity - other_velocity
 
-			# Only apply force if ships are moving toward each other
+			# Only apply force if moving toward the object
 			var closing_speed = relative_velocity.dot(collision_normal)
 			if closing_speed < 0:
 				# Apply momentum-based collision response
