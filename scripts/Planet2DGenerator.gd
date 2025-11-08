@@ -23,6 +23,8 @@ var archetype := "Earthlike"
 		light_angle = value
 		_set_all_light_angle(value)
 
+@export var use_dynamic_sun_lighting := true  # Calculate light angle from Sun2D position
+
 # ---------- Randomization / Editor ----------
 @export var seed: int = -1
 @export var REROLL_NOW: bool = false
@@ -53,6 +55,9 @@ var _w_rings  := 0.0
 # current rotation angles (rad)
 var _planet_rotation := 0.0
 
+# sun reference for dynamic lighting
+var _sun_node: Node2D = null
+
 func _ready() -> void:
 	if planet == null and has_node("Planet"): planet = $Planet
 	if clouds == null and has_node("Clouds"): clouds = $Clouds
@@ -69,11 +74,19 @@ func _ready() -> void:
 	elif auto_randomize:
 		_apply()
 
+	# Find sun for dynamic lighting (only at runtime)
+	if !Engine.is_editor_hint() and use_dynamic_sun_lighting:
+		call_deferred("_find_sun")
+
 func _process(dt: float) -> void:
 	# editor reroll
 	if Engine.is_editor_hint() and (seed != _last_seed or REROLL_NOW):
 		_apply()
 		REROLL_NOW = false
+
+	# Update dynamic sun lighting (only at runtime)
+	if !Engine.is_editor_hint() and use_dynamic_sun_lighting and _sun_node:
+		_update_sun_lighting()
 
 	# continuous spin
 	if spin_enabled:
@@ -354,3 +367,28 @@ func _autosize_rings_to_planet(outer_norm: float, outer_mult: float = 1.6) -> vo
 	var quad_size_px: float = (2.0 * ring_outer_px) / max(outer_norm, 0.001)
 	if rings_back:  rings_back.scale  = Vector2(quad_size_px, quad_size_px)
 	if rings_front: rings_front.scale = Vector2(quad_size_px, quad_size_px)
+
+# ----- dynamic sun lighting -----
+
+func _find_sun() -> void:
+	var root = get_tree().root
+	_sun_node = _search_for_sun(root)
+	if _sun_node:
+		print("Planet ", name, " found sun at ", _sun_node.global_position)
+
+func _search_for_sun(node: Node) -> Node2D:
+	if node.name.begins_with("Sun2D"):
+		return node as Node2D
+	for child in node.get_children():
+		var result = _search_for_sun(child)
+		if result:
+			return result
+	return null
+
+func _update_sun_lighting() -> void:
+	# Calculate angle from planet to sun
+	var to_sun = _sun_node.global_position - global_position
+	var angle = to_sun.angle()
+	# Convert to shader space (0 = right, PI/2 = down in Godot coords)
+	# Shader expects light angle where 0 = from right
+	_set_all_light_angle(angle)
