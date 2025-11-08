@@ -49,7 +49,7 @@ func _physics_process(delta: float) -> void:
 	velocity = ship_velocity
 	move_and_slide()
 
-func get_velocity() -> Vector2:
+func get_ship_velocity() -> Vector2:
 	return ship_velocity
 
 func get_speed() -> float:
