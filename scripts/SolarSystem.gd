@@ -24,7 +24,8 @@ func _ready() -> void:
 		if child.has_method("get_orbit_bounds"):
 			orbital_bodies.append(child)
 
-	call_deferred("_adjust_camera")
+	# Don't adjust camera - use fixed position/zoom set in scene
+	# call_deferred("_adjust_camera")
 
 func _process(delta: float) -> void:
 	# Always handle camera input

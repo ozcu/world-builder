@@ -21,59 +21,60 @@ position = Vector2(2048, 2048)
 texture = ExtResource("6_starbackground")
 
 [node name="Planet2D3" parent="." instance=ExtResource("2_planet")]
-position = Vector2(210, 534)
-scale = Vector2(0.67, 0.67)
+position = Vector2(3200, 1800)
+scale = Vector2(1.0, 1.0)
 archetype = "Desert/Mars"
 
 [node name="Planet2D" parent="." instance=ExtResource("2_planet")]
-position = Vector2(769, 578)
-scale = Vector2(0.67, 0.67)
+position = Vector2(1200, 3000)
+scale = Vector2(1.0, 1.0)
 archetype = "Gas/Saturn"
 
 [node name="Planet2D2" parent="." instance=ExtResource("2_planet")]
-position = Vector2(84, 146)
-scale = Vector2(0.67, 0.67)
+position = Vector2(800, 800)
+scale = Vector2(1.0, 1.0)
 archetype = "Ice"
 
 [node name="Planet2D4" parent="." instance=ExtResource("2_planet")]
-position = Vector2(926, 324)
-scale = Vector2(0.67, 0.67)
+position = Vector2(3400, 3200)
+scale = Vector2(1.0, 1.0)
 
 [node name="Sun2D" parent="." instance=ExtResource("3_sun")]
-position = Vector2(576, 324)
-scale = Vector2(0.67, 0.67)
+position = Vector2(2048, 2048)
+scale = Vector2(1.0, 1.0)
 
 [node name="Starship" parent="." instance=ExtResource("4_starship")]
-position = Vector2(400, 200)
+position = Vector2(1800, 1600)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(576, 324)
+position = Vector2(2048, 2048)
+zoom = Vector2(0.28, 0.28)
 
 [node name="StarshipHUD" parent="." instance=ExtResource("5_hud")]
 
 [node name="SpaceStation1" parent="." instance=ExtResource("7_station")]
-position = Vector2(950, 150)
+position = Vector2(3600, 800)
 
 [node name="SpaceStation2" parent="." instance=ExtResource("7_station")]
-position = Vector2(200, 300)
+position = Vector2(600, 1400)
 
 [node name="SpaceStation3" parent="." instance=ExtResource("7_station")]
-position = Vector2(800, 500)
+position = Vector2(2800, 3500)
 
 [node name="SpaceStation4" parent="." instance=ExtResource("7_station")]
-position = Vector2(350, 600)
+position = Vector2(1200, 600)
 
 [node name="NPCShip1" parent="." instance=ExtResource("8_npcship1")]
-position = Vector2(900, 200)
+position = Vector2(3400, 900)
 
 [node name="NPCShip2" parent="." instance=ExtResource("9_npcship2")]
-position = Vector2(250, 350)
+position = Vector2(700, 1500)
 
 [node name="NPCShip3" parent="." instance=ExtResource("10_npcship3")]
-position = Vector2(750, 450)
+position = Vector2(2600, 3400)
 
 [node name="NPCShip4" parent="." instance=ExtResource("11_npcship4")]
-position = Vector2(400, 550)
+position = Vector2(1300, 700)
 
 [node name="NPCShip5" parent="." instance=ExtResource("8_npcship1")]
-position = Vector2(600, 250)
+position = Vector2(2200, 2800)
