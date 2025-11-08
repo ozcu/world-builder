@@ -1,13 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://dpqo64f6h1bqx"]
+[gd_scene load_steps=7 format=3 uid="uid://dpqo64f6h1bqx"]
 
 [ext_resource type="Script" uid="uid://b4xtnfl6pe464" path="res://scripts/SolarSystem.gd" id="1_solar"]
 [ext_resource type="PackedScene" path="res://scenes/Planet2D.tscn" id="2_planet"]
 [ext_resource type="PackedScene" path="res://scenes/Sun2D.tscn" id="3_sun"]
 [ext_resource type="PackedScene" uid="uid://b9m4k5n6pqrst" path="res://scenes/Starship.tscn" id="4_starship"]
 [ext_resource type="PackedScene" uid="uid://c7m8n9p0qrstu" path="res://scenes/StarshipHUD.tscn" id="5_hud"]
+[ext_resource type="Material" path="res://assets/materials/starfield_material.tres" id="6_starfield"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_solar")
+
+[node name="StarfieldBackground" type="ColorRect" parent="."]
+z_index = -100
+offset_right = 4096.0
+offset_bottom = 4096.0
+mouse_filter = 2
+material = ExtResource("6_starfield")
 
 [node name="Planet2D3" parent="." instance=ExtResource("2_planet")]
 position = Vector2(210, 534)
