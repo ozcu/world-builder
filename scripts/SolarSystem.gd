@@ -76,5 +76,6 @@ func _adjust_camera() -> void:
 	var zoom_y := viewport_size.y / bounds_size.y
 	var zoom_value: float = min(zoom_x, zoom_y) * 0.9  # 90% to ensure everything fits
 
-	camera.zoom = Vector2(zoom_value, zoom_value)
+	# Zoom out by 2x (divide zoom by 2)
+	camera.zoom = Vector2(zoom_value, zoom_value) * 0.5
 	camera.position = (min_pos + max_pos) / 2.0

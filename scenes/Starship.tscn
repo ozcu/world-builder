@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://b9m4k5n6pqrst"]
+
+[ext_resource type="Script" uid="uid://cq5h8m9n3kptx" path="res://scripts/Starship.gd" id="1_starship"]
+[ext_resource type="Texture2D" uid="uid://c8q4k7n2m5pjr" path="res://assets/textures/starship.svg" id="2_texture"]
+
+[node name="Starship" type="RigidBody2D"]
+script = ExtResource("1_starship")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-14, -24, 14, -24, 14, 16, 8, 24, -8, 24, -14, 16)
