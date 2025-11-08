@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://shaders/Sun2D.gdshader" id="1_sun"]
+[ext_resource type="Texture2D" uid="uid://0lw60sbehnfq" path="res://assets/textures/planet.png" id="2_sun"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sun"]
+shader = ExtResource("1_sun")
+shader_parameter/core_color = Vector3(1.0, 0.95, 0.85)
+shader_parameter/corona_color = Vector3(1.0, 0.6, 0.2)
+shader_parameter/size = 1.0
+shader_parameter/corona_intensity = 0.8
+shader_parameter/flare_strength = 0.3
+shader_parameter/rotation_speed = 0.1
+shader_parameter/seed = 123.0
+
+[node name="Sun2D" type="Node2D"]
+
+[node name="Sun" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_sun")
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_sun")

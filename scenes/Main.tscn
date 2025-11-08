@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://ch1b05ghe1eiv"]
+
+[ext_resource type="Script" path="res://scripts/SolarSystem.gd" id="1_solar"]
+[ext_resource type="PackedScene" uid="uid://djnfo4ttx32g5" path="res://scenes/Planet2D.tscn" id="2_planet"]
+[ext_resource type="PackedScene" path="res://scenes/Sun2D.tscn" id="3_sun"]
+[ext_resource type="Script" path="res://scripts/OrbitalBody.gd" id="4_orbital"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_solar")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+
+[node name="Sun2D" parent="." instance=ExtResource("3_sun")]
+position = Vector2(576, 324)
+
+[node name="Orbit1" type="Node2D" parent="."]
+script = ExtResource("4_orbital")
+orbit_center = Vector2(576, 324)
+semi_major_axis = 350.0
+semi_minor_axis = 320.0
+orbital_period = 30.0
+start_angle = 0.0
+
+[node name="Planet2D" parent="Orbit1" instance=ExtResource("2_planet")]
+position = Vector2(0, 0)
+
+[node name="Orbit2" type="Node2D" parent="."]
+script = ExtResource("4_orbital")
+orbit_center = Vector2(576, 324)
+semi_major_axis = 550.0
+semi_minor_axis = 480.0
+orbital_period = 50.0
+start_angle = 2.0
+clockwise = false
+
+[node name="Planet2D" parent="Orbit2" instance=ExtResource("2_planet")]
+position = Vector2(0, 0)
+archetype = "Desert/Mars"
+
+[node name="Orbit3" type="Node2D" parent="."]
+script = ExtResource("4_orbital")
+orbit_center = Vector2(576, 324)
+semi_major_axis = 750.0
+semi_minor_axis = 680.0
+orbital_period = 75.0
+start_angle = 4.0
+
+[node name="Planet2D" parent="Orbit3" instance=ExtResource("2_planet")]
+position = Vector2(0, 0)
+archetype = "Ice"

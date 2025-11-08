@@ -1,0 +1,126 @@
+[gd_scene load_steps=13 format=3 uid="uid://djnfo4ttx32g5"]
+
+[ext_resource type="Script" uid="uid://cq1yplxq3nu2d" path="res://scripts/Planet2DGenerator.gd" id="1_kwmy3"]
+[ext_resource type="Shader" uid="uid://c1a5wwnpe61hc" path="res://shaders/Planet2D.gdshader" id="2_6u704"]
+[ext_resource type="Texture2D" uid="uid://0lw60sbehnfq" path="res://assets/textures/planet.png" id="3_ny1io"]
+[ext_resource type="Texture2D" uid="uid://8lrhhiyrsfb2" path="res://assets/materials/white1x1.tres" id="4_6u704"]
+[ext_resource type="Shader" uid="uid://cj4qwi3s8k63v" path="res://shaders/Rings2D.gdshader" id="4_ny1io"]
+[ext_resource type="Shader" uid="uid://hsfqksn2vwpn" path="res://shaders/Clouds2D.gdshader" id="4_tv5e7"]
+[ext_resource type="Shader" uid="uid://wl62g5slh3tp" path="res://shaders/Atmos2D.gdshader" id="5_i41ab"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ny1io"]
+resource_local_to_scene = true
+shader = ExtResource("2_6u704")
+shader_parameter/seed = 123.0
+shader_parameter/elevation_amp = 0.09859754
+shader_parameter/elevation_freq = 1.5336311
+shader_parameter/detail_amp = 0.01799782
+shader_parameter/detail_freq = 6.115571
+shader_parameter/shallow_color = Vector3(0.21000002, 0.42542234, 0.6)
+shader_parameter/land_low = Vector3(0.14517413, 0.35, 0.105000004)
+shader_parameter/land_high = Vector3(0.8, 0.6498256, 0.44000003)
+shader_parameter/snow_color = Vector3(0.95, 0.98, 1)
+shader_parameter/water_level = -0.018902298
+shader_parameter/snow_height = 0.52102286
+shader_parameter/light_angle = 0.6
+shader_parameter/light_strength = 1.0
+shader_parameter/ambient_floor = 0.26
+shader_parameter/exposure = 1.0
+shader_parameter/edge_vignette = 0.25
+shader_parameter/specular_strength = 0.5
+shader_parameter/specular_gloss = 80.0
+shader_parameter/band_strength = 0.0
+shader_parameter/band_freq = 7.0
+shader_parameter/band_contrast = 2.0
+shader_parameter/band_col_a = Vector3(0.85, 0.8, 0.7)
+shader_parameter/band_col_b = Vector3(0.9, 0.88, 0.83)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tv5e7"]
+shader = ExtResource("4_ny1io")
+shader_parameter/inner_radius = 0.65
+shader_parameter/outer_radius = 1.35
+shader_parameter/edge_softness = 0.05
+shader_parameter/tilt_deg = 23.5
+shader_parameter/rotate_deg = 0.0
+shader_parameter/color_a = Vector3(0.86, 0.79, 0.68)
+shader_parameter/color_b = Vector3(0.92, 0.88, 0.8)
+shader_parameter/band_freq = 12.0
+shader_parameter/band_contrast = 1.8
+shader_parameter/brightness = 1.0
+shader_parameter/light_angle = 0.6
+shader_parameter/day_contrast = 1.0
+shader_parameter/which_half = 0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i41ab"]
+shader = ExtResource("4_ny1io")
+shader_parameter/inner_radius = 0.65
+shader_parameter/outer_radius = 1.35
+shader_parameter/edge_softness = 0.05
+shader_parameter/tilt_deg = 23.5
+shader_parameter/rotate_deg = 0.0
+shader_parameter/color_a = Vector3(0.86, 0.79, 0.68)
+shader_parameter/color_b = Vector3(0.92, 0.88, 0.8)
+shader_parameter/band_freq = 12.0
+shader_parameter/band_contrast = 1.8
+shader_parameter/brightness = 1.0
+shader_parameter/light_angle = 0.6
+shader_parameter/day_contrast = 1.0
+shader_parameter/which_half = 0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w0xgs"]
+resource_local_to_scene = true
+shader = ExtResource("4_tv5e7")
+shader_parameter/seed = 42.0
+shader_parameter/coverage = 0.430416
+shader_parameter/crisp = 3.5370765
+shader_parameter/freq = 2.9195268
+shader_parameter/wind_speed = 0.17739753
+shader_parameter/density = 0.70943034
+shader_parameter/light_angle = 0.6
+shader_parameter/brightness = 1.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_31db0"]
+resource_local_to_scene = true
+shader = ExtResource("5_i41ab")
+shader_parameter/color_rayleigh = Vector3(0.65, 0.882286, 1)
+shader_parameter/color_mie = Vector3(0.9, 0.99636745, 1)
+shader_parameter/intensity = 0.85
+shader_parameter/mie_strength = 0.22415489
+shader_parameter/rim_power = 3.3447266
+shader_parameter/day_side_bias = 0.40410703
+shader_parameter/light_angle = 0.6
+
+[node name="Planet2D" type="Node2D" node_paths=PackedStringArray("planet", "clouds", "atmos")]
+script = ExtResource("1_kwmy3")
+planet = NodePath("Planet")
+clouds = NodePath("Clouds")
+atmos = NodePath("Atmosphere")
+
+[node name="Planet" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_ny1io")
+scale = Vector2(0.9943786, 1.1950703)
+texture = ExtResource("3_ny1io")
+
+[node name="RingFront" type="Sprite2D" parent="Planet"]
+visible = false
+z_index = 1
+material = SubResource("ShaderMaterial_tv5e7")
+scale = Vector2(500, 61.657)
+texture = ExtResource("4_6u704")
+
+[node name="RingBack" type="Sprite2D" parent="Planet"]
+visible = false
+z_index = -1
+material = SubResource("ShaderMaterial_i41ab")
+scale = Vector2(1.5229397, 1.5229397)
+texture = ExtResource("4_6u704")
+
+[node name="Clouds" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_w0xgs")
+scale = Vector2(1.0341525, 1.2428716)
+texture = ExtResource("3_ny1io")
+
+[node name="Atmosphere" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_31db0")
+scale = Vector2(1.0755173, 1.292585)
+texture = ExtResource("3_ny1io")
