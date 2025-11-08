@@ -14,6 +14,7 @@ func _ready() -> void:
 	gravity_scale = 0.0  # No gravity in space
 	linear_damp = 0.5
 	angular_damp = 2.0
+	lock_rotation = true  # Prevent physics from rotating, we control it manually
 
 func _process(delta: float) -> void:
 	# Get rotation input from left/right arrows
