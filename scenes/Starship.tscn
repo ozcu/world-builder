@@ -13,20 +13,20 @@ texture = ExtResource("2_texture")
 
 [node name="ThrusterLeft" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(-12, 45)
-scale = Vector2(0.6, 0.7)
+position = Vector2(-15, 62)
+scale = Vector2(0.7, 0.8)
 texture = ExtResource("3_thruster")
 
 [node name="ThrusterCenter" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(0, 45)
-scale = Vector2(0.5, 0.7)
+position = Vector2(0, 62)
+scale = Vector2(0.6, 0.8)
 texture = ExtResource("3_thruster")
 
 [node name="ThrusterRight" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(12, 45)
-scale = Vector2(0.6, 0.7)
+position = Vector2(15, 62)
+scale = Vector2(0.7, 0.8)
 texture = ExtResource("3_thruster")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
