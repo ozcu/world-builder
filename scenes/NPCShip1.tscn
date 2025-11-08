@@ -8,19 +8,19 @@
 script = ExtResource("1_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.6, 0.6)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_texture")
 
 [node name="ThrusterLeft" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(-10, 28)
-scale = Vector2(0.4, 0.4)
+position = Vector2(-25, 70)
+scale = Vector2(1.0, 1.0)
 texture = ExtResource("3_thruster")
 
 [node name="ThrusterRight" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(10, 28)
-scale = Vector2(0.4, 0.4)
+position = Vector2(25, 70)
+scale = Vector2(1.0, 1.0)
 texture = ExtResource("3_thruster")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
