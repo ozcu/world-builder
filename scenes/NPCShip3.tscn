@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://npcship3_scene"]
+
+[ext_resource type="Script" uid="uid://npcship_script_01" path="res://scripts/NPCShip.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cqgwovyjrqo72" path="res://assets/textures/npc3.png" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://k4l80gdocyhc" path="res://assets/textures/thruster.svg" id="3_thruster"]
+
+[node name="NPCShip3" type="CharacterBody2D"]
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_texture")
+
+[node name="ThrusterLeft" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(-10, 28)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("3_thruster")
+
+[node name="ThrusterRight" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(10, 28)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("3_thruster")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-12, -18, 12, -18, 12, 18, 10, 22, -10, 22, -12, 18)
