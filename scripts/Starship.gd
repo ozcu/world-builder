@@ -15,7 +15,7 @@ func _ready() -> void:
 	linear_damp = 0.5
 	angular_damp = 2.0
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	# Get rotation input from left/right arrows
 	var rotation_input: float = 0.0
 	if Input.is_action_pressed("ui_left"):
@@ -32,7 +32,7 @@ func _process(_delta: float) -> void:
 
 	# Apply rotation
 	if rotation_input != 0.0:
-		rotation += rotation_input * rotation_speed * _delta
+		rotation += rotation_input * rotation_speed * delta
 
 func _physics_process(delta: float) -> void:
 	# Apply thrust in the direction the ship is facing
