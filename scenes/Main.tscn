@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/Sun2D.tscn" id="3_sun"]
 [ext_resource type="PackedScene" uid="uid://cam4k5n6pqrst" path="res://scenes/Starship.tscn" id="4_starship"]
 [ext_resource type="PackedScene" path="res://scenes/StarshipHUD.tscn" id="5_hud"]
-[ext_resource type="Texture2D" uid="uid://by0qfvvs0dphr" path="res://assets/textures/star-background.jpg" id="6_starbackground"]
+[ext_resource type="Texture2D" path="res://assets/textures/skybox/cubemap.png" id="6_skybox"]
 [ext_resource type="PackedScene" path="res://scenes/SpaceStation.tscn" id="7_station"]
 [ext_resource type="PackedScene" path="res://scenes/NPCShip1.tscn" id="8_npcship1"]
 [ext_resource type="PackedScene" path="res://scenes/NPCShip3.tscn" id="10_npcship3"]
@@ -19,10 +19,10 @@ layer = -100
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.05, 0.05)
-motion_mirroring = Vector2(4096, 4096)
+motion_mirroring = Vector2(8192, 6144)
 
-[node name="StarBackground" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-texture = ExtResource("6_starbackground")
+[node name="SkyboxBackground" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+texture = ExtResource("6_skybox")
 centered = false
 
 [node name="Planet2D3" parent="." instance=ExtResource("2_planet")]
