@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/Sun2D.tscn" id="3_sun"]
 [ext_resource type="PackedScene" uid="uid://cam4k5n6pqrst" path="res://scenes/Starship.tscn" id="4_starship"]
 [ext_resource type="PackedScene" path="res://scenes/StarshipHUD.tscn" id="5_hud"]
-[ext_resource type="Texture2D" path="res://assets/textures/skybox/cubemap.png" id="6_skybox"]
+[ext_resource type="Texture2D" path="res://assets/textures/skybox/front.png" id="6_skybox"]
 [ext_resource type="PackedScene" path="res://scenes/SpaceStation.tscn" id="7_station"]
 [ext_resource type="PackedScene" path="res://scenes/NPCShip1.tscn" id="8_npcship1"]
 [ext_resource type="PackedScene" path="res://scenes/NPCShip3.tscn" id="10_npcship3"]
@@ -19,7 +19,7 @@ layer = -100
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.05, 0.05)
-motion_mirroring = Vector2(8192, 6144)
+motion_mirroring = Vector2(2048, 2048)
 
 [node name="SkyboxBackground" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 texture = ExtResource("6_skybox")
