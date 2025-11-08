@@ -11,21 +11,26 @@ script = ExtResource("1_solar")
 
 [node name="Planet2D3" parent="." instance=ExtResource("2_planet")]
 position = Vector2(210, 534)
+scale = Vector2(1.35, 1.35)
 archetype = "Desert/Mars"
 
 [node name="Planet2D" parent="." instance=ExtResource("2_planet")]
 position = Vector2(769, 578)
+scale = Vector2(1.35, 1.35)
 archetype = "Gas/Saturn"
 
 [node name="Planet2D2" parent="." instance=ExtResource("2_planet")]
 position = Vector2(84, 146)
+scale = Vector2(1.35, 1.35)
 archetype = "Ice"
 
 [node name="Planet2D4" parent="." instance=ExtResource("2_planet")]
 position = Vector2(926, 324)
+scale = Vector2(1.35, 1.35)
 
 [node name="Sun2D" parent="." instance=ExtResource("3_sun")]
 position = Vector2(576, 324)
+scale = Vector2(1.35, 1.35)
 
 [node name="Starship" parent="." instance=ExtResource("4_starship")]
 position = Vector2(400, 200)
