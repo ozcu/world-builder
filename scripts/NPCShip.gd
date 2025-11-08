@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var cruise_speed: float = 80.0
 @export var acceleration: float = 100.0
 @export var rotation_speed: float = 1.5
-@export var arrival_distance: float = 50.0
+@export var arrival_distance: float = 200.0  # Increased to avoid collision with stations
 @export var separation_distance: float = 200.0
 @export var separation_force: float = 150.0
 @export var mass: float = 500.0  # Ship mass for collision physics
