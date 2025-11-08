@@ -14,17 +14,11 @@
 [node name="Main" type="Node2D"]
 script = ExtResource("1_solar")
 
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
-layer = -100
-
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_scale = Vector2(0, 0)
-motion_mirroring = Vector2(6000, 4000)
-
-[node name="StarBackground" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+[node name="StarBackground" type="Sprite2D" parent="."]
+z_index = -100
 position = Vector2(2048, 2048)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("6_starbackground")
-centered = true
 
 [node name="Planet2D3" parent="." instance=ExtResource("2_planet")]
 position = Vector2(3200, 1800)
