@@ -24,10 +24,10 @@ world-builder/
 │   └── Sun2D.gdshader        # Animated sun surface
 │
 └── assets/
-    ├── textures/       # Image files
-    │   └── planet.png  # Base planet texture
-    └── materials/      # Material resources
-        └── white1x1.tres  # Utility texture for shaders
+	├── textures/       # Image files
+	│   └── planet.png  # Base planet texture
+	└── materials/      # Material resources
+		└── white1x1.tres  # Utility texture for shaders
 ```
 
 ## Features
