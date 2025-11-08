@@ -5,6 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://k4l80gdocyhc" path="res://assets/textures/thruster.svg" id="3_thruster"]
 
 [node name="Starship" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 7
 script = ExtResource("1_starship")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -13,20 +15,20 @@ texture = ExtResource("2_texture")
 
 [node name="ThrusterLeft" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(-15, 62)
-scale = Vector2(0.7, 0.8)
+position = Vector2(-20, 100)
+scale = Vector2(1.2, 1.4)
 texture = ExtResource("3_thruster")
 
 [node name="ThrusterCenter" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(0, 62)
-scale = Vector2(0.6, 0.8)
+position = Vector2(0, 100)
+scale = Vector2(1.0, 1.6)
 texture = ExtResource("3_thruster")
 
 [node name="ThrusterRight" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(15, 62)
-scale = Vector2(0.7, 0.8)
+position = Vector2(20, 100)
+scale = Vector2(1.2, 1.4)
 texture = ExtResource("3_thruster")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]

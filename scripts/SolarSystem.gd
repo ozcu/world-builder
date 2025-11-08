@@ -11,6 +11,7 @@ extends Node2D
 
 @onready var camera: Camera2D = $Camera2D
 @onready var sun: Node2D = $Sun2D
+@onready var starship: Node2D = $Starship
 
 var orbital_bodies: Array[Node2D] = []
 var camera_velocity: Vector2 = Vector2.ZERO
@@ -115,7 +116,7 @@ func _handle_camera_input(delta: float) -> void:
 		camera.position += camera_velocity * delta / camera.zoom.x
 
 func _input(event: InputEvent) -> void:
-	# Mouse wheel zoom
+	# Mouse wheel zoom and middle button camera centering
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			var new_zoom = camera.zoom.x + zoom_speed
@@ -125,3 +126,7 @@ func _input(event: InputEvent) -> void:
 			var new_zoom = camera.zoom.x - zoom_speed
 			new_zoom = clamp(new_zoom, min_zoom, max_zoom)
 			camera.zoom = Vector2(new_zoom, new_zoom)
+		elif event.button_index == MOUSE_BUTTON_MIDDLE and event.pressed:
+			# Center camera on player ship
+			if starship:
+				camera.position = starship.global_position

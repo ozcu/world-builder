@@ -5,11 +5,14 @@ extends CharacterBody2D
 @export var acceleration: float = 100.0
 @export var rotation_speed: float = 1.5
 @export var arrival_distance: float = 50.0
+@export var separation_distance: float = 200.0
+@export var separation_force: float = 150.0
 
 var current_target: Vector2 = Vector2.ZERO
 var ship_velocity: Vector2 = Vector2.ZERO
 var hubs: Array[Node2D] = []
 var current_hub_index: int = 0
+var nearby_ships: Array[Node2D] = []
 
 @onready var thruster_left: Sprite2D = $ThrusterLeft
 @onready var thruster_right: Sprite2D = $ThrusterRight
@@ -21,6 +24,7 @@ func _ready() -> void:
 func _find_hubs() -> void:
 	var root = get_tree().root
 	_collect_hubs(root)
+	_find_nearby_ships(root)
 
 	if hubs.size() > 0:
 		# Start by heading to first hub
@@ -29,6 +33,12 @@ func _find_hubs() -> void:
 	else:
 		# No hubs, just cruise around
 		_pick_random_target()
+
+func _find_nearby_ships(node: Node) -> void:
+	if node != self and node is CharacterBody2D and node.name.begins_with("NPCShip"):
+		nearby_ships.append(node)
+	for child in node.get_children():
+		_find_nearby_ships(child)
 
 func _collect_hubs(node: Node) -> void:
 	if node.name.begins_with("SpaceStation"):
@@ -62,6 +72,10 @@ func _physics_process(delta: float) -> void:
 	# Calculate desired velocity
 	var desired_velocity = to_target.normalized() * desired_speed
 
+	# Apply separation force from nearby ships
+	var separation_vector = _calculate_separation()
+	desired_velocity += separation_vector
+
 	# Smoothly adjust current velocity
 	ship_velocity = ship_velocity.lerp(desired_velocity, acceleration * delta / cruise_speed)
 
@@ -76,6 +90,28 @@ func _physics_process(delta: float) -> void:
 
 	# Update thruster effects
 	_update_thrusters()
+
+func _calculate_separation() -> Vector2:
+	var separation = Vector2.ZERO
+	var count = 0
+
+	for other_ship in nearby_ships:
+		if !is_instance_valid(other_ship):
+			continue
+
+		var distance = global_position.distance_to(other_ship.global_position)
+
+		if distance < separation_distance and distance > 0:
+			# Calculate repulsion force (stronger when closer)
+			var away_vector = (global_position - other_ship.global_position).normalized()
+			var strength = (separation_distance - distance) / separation_distance
+			separation += away_vector * strength * separation_force
+			count += 1
+
+	if count > 0:
+		separation /= count
+
+	return separation
 
 func _next_destination() -> void:
 	if hubs.size() > 0:

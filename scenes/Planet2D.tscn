@@ -90,7 +90,12 @@ shader_parameter/rim_power = 3.3447266
 shader_parameter/day_side_bias = 0.40410703
 shader_parameter/light_angle = 0.6
 
-[node name="Planet2D" type="Node2D" node_paths=PackedStringArray("planet", "clouds", "atmos")]
+[sub_resource type="CircleShape2D" id="CircleShape2D_planet"]
+radius = 64.0
+
+[node name="Planet2D" type="StaticBody2D" node_paths=PackedStringArray("planet", "clouds", "atmos")]
+collision_layer = 2
+collision_mask = 1
 script = ExtResource("1_kwmy3")
 planet = NodePath("Planet")
 clouds = NodePath("Clouds")
@@ -124,3 +129,6 @@ texture = ExtResource("3_ny1io")
 material = SubResource("ShaderMaterial_31db0")
 scale = Vector2(1.0755173, 1.292585)
 texture = ExtResource("3_ny1io")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_planet")

@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://b4xtnfl6pe464" path="res://scripts/SolarSystem.gd" id="1_solar"]
 [ext_resource type="PackedScene" path="res://scenes/Planet2D.tscn" id="2_planet"]
 [ext_resource type="PackedScene" path="res://scenes/Sun2D.tscn" id="3_sun"]
-[ext_resource type="PackedScene" uid="uid://b9m4k5n6pqrst" path="res://scenes/Starship.tscn" id="4_starship"]
-[ext_resource type="PackedScene" uid="uid://c7m8n9p0qrstu" path="res://scenes/StarshipHUD.tscn" id="5_hud"]
-[ext_resource type="Texture2D" path="res://assets/textures/star-background.jpg" id="6_starbackground"]
-[ext_resource type="PackedScene" uid="uid://starhub_scene_01" path="res://scenes/SpaceStation.tscn" id="7_station"]
-[ext_resource type="PackedScene" uid="uid://npcship1_scene" path="res://scenes/NPCShip1.tscn" id="8_npcship1"]
-[ext_resource type="PackedScene" uid="uid://npcship2_scene" path="res://scenes/NPCShip2.tscn" id="9_npcship2"]
-[ext_resource type="PackedScene" uid="uid://npcship3_scene" path="res://scenes/NPCShip3.tscn" id="10_npcship3"]
-[ext_resource type="PackedScene" uid="uid://npcship4_scene" path="res://scenes/NPCShip4.tscn" id="11_npcship4"]
+[ext_resource type="PackedScene" uid="uid://cam4k5n6pqrst" path="res://scenes/Starship.tscn" id="4_starship"]
+[ext_resource type="PackedScene" path="res://scenes/StarshipHUD.tscn" id="5_hud"]
+[ext_resource type="Texture2D" uid="uid://by0qfvvs0dphr" path="res://assets/textures/star-background.jpg" id="6_starbackground"]
+[ext_resource type="Script" uid="uid://bx63ck5bc5ok7" path="res://scripts/StarBackground.gd" id="6_starbackground_script"]
+[ext_resource type="PackedScene" path="res://scenes/SpaceStation.tscn" id="7_station"]
+[ext_resource type="PackedScene" path="res://scenes/NPCShip1.tscn" id="8_npcship1"]
+[ext_resource type="PackedScene" path="res://scenes/NPCShip3.tscn" id="10_npcship3"]
+[ext_resource type="PackedScene" path="res://scenes/NPCShip4.tscn" id="11_npcship4"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_solar")
@@ -19,36 +19,33 @@ script = ExtResource("1_solar")
 z_index = -100
 position = Vector2(2048, 2048)
 texture = ExtResource("6_starbackground")
+script = ExtResource("6_starbackground_script")
 
 [node name="Planet2D3" parent="." instance=ExtResource("2_planet")]
 position = Vector2(3200, 1800)
-scale = Vector2(1.0, 1.0)
 archetype = "Desert/Mars"
 
 [node name="Planet2D" parent="." instance=ExtResource("2_planet")]
 position = Vector2(1200, 3000)
-scale = Vector2(1.0, 1.0)
 archetype = "Gas/Saturn"
 
 [node name="Planet2D2" parent="." instance=ExtResource("2_planet")]
 position = Vector2(800, 800)
-scale = Vector2(1.0, 1.0)
 archetype = "Ice"
 
 [node name="Planet2D4" parent="." instance=ExtResource("2_planet")]
 position = Vector2(3400, 3200)
-scale = Vector2(1.0, 1.0)
 
 [node name="Sun2D" parent="." instance=ExtResource("3_sun")]
 position = Vector2(2048, 2048)
-scale = Vector2(1.0, 1.0)
 
 [node name="Starship" parent="." instance=ExtResource("4_starship")]
 position = Vector2(1800, 1600)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(2048, 2048)
-zoom = Vector2(0.25, 0.25)
+offset = Vector2(243.16, 0)
+zoom = Vector2(-0.21, -0.21)
 
 [node name="StarshipHUD" parent="." instance=ExtResource("5_hud")]
 
@@ -66,9 +63,6 @@ position = Vector2(1200, 600)
 
 [node name="NPCShip1" parent="." instance=ExtResource("8_npcship1")]
 position = Vector2(3400, 900)
-
-[node name="NPCShip2" parent="." instance=ExtResource("9_npcship2")]
-position = Vector2(700, 1500)
 
 [node name="NPCShip3" parent="." instance=ExtResource("10_npcship3")]
 position = Vector2(2600, 3400)

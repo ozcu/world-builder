@@ -1,12 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://starhub_scene_01"]
+[gd_scene load_steps=4 format=3 uid="uid://starhub_scene_01"]
 
 [ext_resource type="Texture2D" uid="uid://bac55l1l2y3u8" path="res://SS1.png" id="1_texture"]
+[ext_resource type="Script" path="res://scripts/SpaceStation.gd" id="1_script"]
 
-[node name="SpaceStation" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_station"]
+radius = 77.0
+
+[node name="SpaceStation" type="StaticBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("1_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_station")
 
 [node name="DockingArea" type="Area2D" parent="."]
 
