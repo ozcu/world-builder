@@ -3,7 +3,7 @@ extends CanvasLayer
 
 @onready var speed_label: Label = $MarginContainer/VBoxContainer/SpeedLabel
 
-var starship: RigidBody2D = null
+var starship: CharacterBody2D = null
 
 func _ready() -> void:
 	# Find the starship in the scene

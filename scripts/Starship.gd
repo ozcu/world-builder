@@ -1,20 +1,17 @@
 # res://scripts/Starship.gd
-extends RigidBody2D
+extends CharacterBody2D
 
 @export var acceleration: float = 500.0
 @export var max_speed: float = 400.0
 @export var rotation_speed: float = 2.5
 @export var drag: float = 0.98  # Friction in space
 
-var velocity: Vector2 = Vector2.ZERO
+var ship_velocity: Vector2 = Vector2.ZERO
 var thrust_amount: float = 0.0
 
 func _ready() -> void:
-	# Set up RigidBody2D properties
-	gravity_scale = 0.0  # No gravity in space
-	linear_damp = 0.5
-	angular_damp = 10.0  # High damping to prevent rotation
-	lock_rotation = true  # Prevent physics from rotating, we control it manually
+	# CharacterBody2D doesn't need physics setup
+	pass
 
 func _process(delta: float) -> void:
 	# Get rotation input from left/right arrows
@@ -31,31 +28,29 @@ func _process(delta: float) -> void:
 	elif Input.is_action_pressed("ui_down"):
 		thrust_amount = -0.5  # Reverse thrust is weaker
 
-	# Apply rotation directly
+	# Apply rotation directly - no physics interference!
 	if rotation_input != 0.0:
 		rotation += rotation_input * rotation_speed * delta
 
 func _physics_process(delta: float) -> void:
-	# Force angular velocity to zero (prevent physics rotation)
-	angular_velocity = 0.0
-
 	# Apply thrust in the direction the ship is facing
 	if thrust_amount != 0.0:
 		var thrust_direction = Vector2(0, -1).rotated(rotation)  # Ship points up
-		velocity += thrust_direction * thrust_amount * acceleration * delta
+		ship_velocity += thrust_direction * thrust_amount * acceleration * delta
 
 	# Apply drag
-	velocity *= drag
+	ship_velocity *= drag
 
 	# Limit max speed
-	if velocity.length() > max_speed:
-		velocity = velocity.normalized() * max_speed
+	if ship_velocity.length() > max_speed:
+		ship_velocity = ship_velocity.normalized() * max_speed
 
-	# Apply velocity to RigidBody2D
-	linear_velocity = velocity
+	# Set velocity and move - CharacterBody2D way
+	velocity = ship_velocity
+	move_and_slide()
 
 func get_velocity() -> Vector2:
-	return velocity
+	return ship_velocity
 
 func get_speed() -> float:
-	return velocity.length()
+	return ship_velocity.length()
