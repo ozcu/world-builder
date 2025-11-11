@@ -15,7 +15,10 @@ func _ready() -> void:
 
 func render_ship() -> void:
 	if ship_definition == null:
+		print("ShipRenderer: Cannot render - ship_definition is null")
 		return
+
+	print("ShipRenderer: Starting render with cell_size=", cell_size, ", auto_center=", auto_center)
 
 	# Clear existing sprites
 	clear_sprites()
@@ -30,6 +33,9 @@ func render_ship() -> void:
 		var ship_pixel_size = Vector2(bounds.size.x * cell_size, bounds.size.y * cell_size)
 		offset = (viewport_size - ship_pixel_size) / 2.0
 		offset -= Vector2(bounds.position.x * cell_size, bounds.position.y * cell_size)
+		print("ShipRenderer: Auto-center offset = ", offset)
+	else:
+		print("ShipRenderer: No auto-center, offset = ", offset)
 
 	# Render tiles
 	for i in ship_definition.tile_positions.size():
@@ -57,15 +63,29 @@ func render_ship() -> void:
 		)
 		sprite.centered = false
 
-		# Rotate sprite if vertical orientation
-		if !placement.horizontal:
-			sprite.rotation = deg_to_rad(90)
-			# Adjust position for rotation pivot
-			var size = placement.part.size
-			sprite.position += Vector2(0, size.x * cell_size)
+		# Apply rotation (0, 90, 180, 270)
+		var rotation_angle = placement.rotation if placement.has("rotation") else (0 if placement.horizontal else 90)
+		sprite.rotation = deg_to_rad(rotation_angle)
+
+		# Adjust position based on rotation to maintain correct grid alignment
+		# Rotation happens around top-left corner (0,0) since centered = false
+		var size = placement.part.size
+		match rotation_angle:
+			90:
+				# Rotated 90° clockwise: need to shift by width
+				sprite.position += Vector2(0, size.x * cell_size)
+			180:
+				# Rotated 180°: need to shift by width and height
+				sprite.position += Vector2(size.x * cell_size, size.y * cell_size)
+			270:
+				# Rotated 270° clockwise (90° counter-clockwise): need to shift by height
+				sprite.position += Vector2(size.y * cell_size, 0)
 
 		add_child(sprite)
 		part_sprites[placement] = sprite
+
+	print("ShipRenderer: Rendered ", tile_sprites.size(), " tiles and ", part_sprites.size(), " parts")
+	print("ShipRenderer: Total child sprites: ", get_child_count())
 
 func clear_sprites() -> void:
 	for sprite in tile_sprites.values():

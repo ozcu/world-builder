@@ -170,8 +170,19 @@ func apply_ship_design(design: ShipDefinition) -> void:
 
 	add_child(ship_renderer)
 
+	# Explicitly call render_ship after it's added to scene tree
+	# (In case _ready() didn't trigger yet)
+	ship_renderer.call_deferred("render_ship")
+
 	print("Starship: Applied ship design '", design.ship_name, "'")
 	print("  Tiles: ", design.tile_positions.size())
 	print("  Parts: ", design.parts.size())
 	print("  Bounds: ", bounds)
 	print("  Center offset: ", center_offset)
+	print("  Ship renderer cell_size: ", ship_renderer.cell_size)
+
+	# Debug: print first few tile positions
+	for i in min(5, design.tile_positions.size()):
+		var pos = design.tile_positions[i]
+		var pixel_pos = Vector2(pos.x * ship_renderer.cell_size, pos.y * ship_renderer.cell_size)
+		print("  Tile ", i, " at grid ", pos, " -> pixel ", pixel_pos)

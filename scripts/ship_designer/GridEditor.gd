@@ -14,7 +14,7 @@ signal ship_modified()
 var current_tool: String = "tile"  # "tile", "part", "erase"
 var current_tile: ShipTile = null
 var current_part: ShipPart = null
-var current_orientation: bool = true  # true = horizontal
+var current_rotation: int = 0  # Rotation in degrees: 0, 90, 180, 270
 var is_painting: bool = false  # Track if mouse button is held down
 var last_painted_cell: Vector2i = Vector2i(-1, -1)  # Prevent painting same cell multiple times
 
@@ -110,7 +110,7 @@ func draw_grid() -> void:
 		draw_line(Vector2(0, y_pos), Vector2(grid_size.x * cell_size, y_pos), grid_color)
 
 func _input(event: InputEvent) -> void:
-	# Handle space key for pan mode
+	# Handle keyboard input
 	if event is InputEventKey:
 		if event.keycode == KEY_SPACE:
 			if event.pressed and not is_panning:
@@ -121,6 +121,11 @@ func _input(event: InputEvent) -> void:
 				# End pan mode
 				is_panning = false
 				Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+		elif event.keycode == KEY_R and event.pressed:
+			# Rotate part by 90 degrees clockwise
+			current_rotation = (current_rotation + 90) % 360
+			update_preview()
+			print("GridEditor: Rotation set to ", current_rotation, "°")
 
 	if event is InputEventMouseMotion:
 		if is_panning:
@@ -149,12 +154,6 @@ func _input(event: InputEvent) -> void:
 				else:
 					is_painting = false
 					last_painted_cell = Vector2i(-1, -1)
-		# Handle right-click to toggle orientation
-		elif event.button_index == MOUSE_BUTTON_RIGHT:
-			if event.pressed:
-				current_orientation = !current_orientation
-				update_preview()
-				print("GridEditor: Orientation toggled to ", "Horizontal" if current_orientation else "Vertical")
 		# Handle scroll wheel zoom (without needing middle mouse button)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			zoom_in()
@@ -210,14 +209,8 @@ func update_preview() -> void:
 		else:
 			hover_preview.modulate = Color(1, 0, 0, 0.5)  # Red transparent = invalid
 
-		# Handle rotation - keep position under cursor for both orientations
-		if !current_orientation:
-			# Vertical: rotate 90° and keep under cursor
-			hover_preview.rotation = deg_to_rad(90)
-			# No position adjustment needed - rotation happens at same grid position
-		else:
-			# Horizontal: no rotation
-			hover_preview.rotation = 0
+		# Apply rotation - keep position under cursor for all rotations
+		hover_preview.rotation = deg_to_rad(current_rotation)
 
 	elif current_tool == "erase":
 		hover_preview.visible = false
@@ -238,7 +231,7 @@ func can_place_current_part() -> bool:
 	var placement = PartPlacement.new()
 	placement.part = current_part
 	placement.grid_position = hover_position
-	placement.horizontal = current_orientation
+	placement.rotation = current_rotation
 
 	return ship_definition.can_place_part(placement)
 
@@ -313,10 +306,10 @@ func place_part(pos: Vector2i, part: ShipPart) -> void:
 	var placement = PartPlacement.new()
 	placement.part = part
 	placement.grid_position = pos
-	placement.horizontal = current_orientation
+	placement.rotation = current_rotation
 
 	if ship_definition.add_part(placement):
-		print("GridEditor: Placed ", part.part_name, " at ", pos)
+		print("GridEditor: Placed ", part.part_name, " at ", pos, " with rotation ", current_rotation, "°")
 		refresh()
 		ship_modified.emit()
 	else:
@@ -365,8 +358,9 @@ func set_tool(tool: String, item = null) -> void:
 
 	update_preview()
 
-func set_orientation(horizontal: bool) -> void:
-	current_orientation = horizontal
+func set_rotation(rotation_degrees: int) -> void:
+	"""Set the current rotation angle for parts (0, 90, 180, 270)"""
+	current_rotation = rotation_degrees % 360
 	update_preview()
 
 func zoom_in() -> void:
