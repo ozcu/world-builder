@@ -17,6 +17,10 @@ extends Control
 # Current ship being edited
 var current_ship: ShipDefinition
 
+# Tile and part libraries for loading
+var tiles_library: Dictionary = {}
+var parts_library: Dictionary = {}
+
 # Editor state
 var selected_tool: String = "tile"  # "tile", "part", "erase"
 var selected_tile: ShipTile = null
@@ -36,12 +40,12 @@ func _ready() -> void:
 
 func setup_ui() -> void:
 	# Initialize palettes with test data
-	var tiles = TestDataGenerator.create_test_tiles()
-	var parts = TestDataGenerator.create_test_parts()
+	tiles_library = TestDataGenerator.create_test_tiles()
+	parts_library = TestDataGenerator.create_test_parts()
 
 	print("=== Ship Designer Initialized ===")
-	print("Tiles loaded: ", tiles.keys())
-	print("Parts loaded: ", parts.keys())
+	print("Tiles loaded: ", tiles_library.keys())
+	print("Parts loaded: ", parts_library.keys())
 
 	# Debug UI hierarchy
 	print("\n=== UI Hierarchy Debug ===")
@@ -57,14 +61,14 @@ func setup_ui() -> void:
 	print("=========================\n")
 
 	if tile_palette:
-		tile_palette.set_tiles(tiles)
-		print("Tile palette set with ", tiles.size(), " tiles")
+		tile_palette.set_tiles(tiles_library)
+		print("Tile palette set with ", tiles_library.size(), " tiles")
 	else:
 		print("WARNING: tile_palette is null!")
 
 	if part_palette:
-		part_palette.set_parts(parts)
-		print("Part palette set with ", parts.size(), " parts")
+		part_palette.set_parts(parts_library)
+		print("Part palette set with ", parts_library.size(), " parts")
 	else:
 		print("WARNING: part_palette is null!")
 
@@ -143,10 +147,12 @@ func save_ship(filepath: String) -> void:
 
 func load_ship(filepath: String) -> bool:
 	if !FileAccess.file_exists(filepath):
+		print("ERROR: File does not exist: ", filepath)
 		return false
 
 	var file = FileAccess.open(filepath, FileAccess.READ)
 	if !file:
+		print("ERROR: Could not open file: ", filepath)
 		return false
 
 	var json_string = file.get_as_text()
@@ -154,10 +160,22 @@ func load_ship(filepath: String) -> bool:
 
 	var json = JSON.parse_string(json_string)
 	if json == null:
+		print("ERROR: Invalid JSON in file: ", filepath)
 		return false
 
-	# TODO: Implement from_json() in ShipDefinition
+	# Load ship from JSON using libraries
+	current_ship = ShipDefinition.from_json(json, tiles_library, parts_library)
+
+	# Update grid editor
+	if grid_editor:
+		grid_editor.ship_definition = current_ship
+		grid_editor.refresh()
+
 	print("Ship loaded from: ", filepath)
+	print("  Ship name: ", current_ship.ship_name)
+	print("  Tiles: ", current_ship.tile_positions.size())
+	print("  Parts: ", current_ship.parts.size())
+
 	return true
 
 func clear_ship() -> void:
@@ -176,8 +194,6 @@ func _on_save_pressed() -> void:
 func _on_load_pressed() -> void:
 	# For now, load from default location
 	if load_ship("user://test_ship.ship"):
-		if grid_editor:
-			grid_editor.refresh()
 		update_stats()
 
 func _on_clear_pressed() -> void:
@@ -185,7 +201,8 @@ func _on_clear_pressed() -> void:
 
 func _on_orientation_toggled(pressed: bool) -> void:
 	part_orientation_horizontal = !pressed
-	toggle_orientation()
+	if grid_editor:
+		grid_editor.set_orientation(part_orientation_horizontal)
 
 	# Update button text
 	if orientation_button:

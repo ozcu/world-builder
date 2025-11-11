@@ -247,3 +247,62 @@ func to_json() -> Dictionary:
 		})
 
 	return json
+
+# Import from JSON
+static func from_json(json: Dictionary, tiles_library: Dictionary, parts_library: Dictionary) -> ShipDefinition:
+	var ship = ShipDefinition.new()
+
+	# Basic properties
+	ship.ship_name = json.get("ship_name", "Unnamed Ship")
+	var grid_size_array = json.get("grid_size", [64, 64])
+	ship.grid_size = Vector2i(grid_size_array[0], grid_size_array[1])
+
+	# Import tiles
+	var tiles_data = json.get("tiles", {})
+	for pos_key in tiles_data.keys():
+		var tile_data = tiles_data[pos_key]
+		var tile_id = tile_data.get("type", "")
+
+		# Look up tile in library
+		if tiles_library.has(tile_id):
+			var tile_template = tiles_library[tile_id]
+			var pos_parts = pos_key.split(",")
+			var pos = Vector2i(int(pos_parts[0]), int(pos_parts[1]))
+
+			# Set tile (this will duplicate it)
+			ship.set_tile(pos, tile_template)
+
+			# Restore variant if needed
+			var variant = tile_data.get("variant", 0)
+			if variant != 0:
+				var tile = ship.get_tile(pos)
+				if tile:
+					tile.variant = variant
+		else:
+			print("Warning: Unknown tile type '", tile_id, "' in saved ship")
+
+	# Import parts
+	var parts_data = json.get("parts", [])
+	for part_data in parts_data:
+		var part_id = part_data.get("part_id", "")
+
+		# Look up part in library
+		if parts_library.has(part_id):
+			var part_template = parts_library[part_id]
+
+			var placement = PartPlacement.new()
+			placement.part = part_template
+
+			var pos_array = part_data.get("position", [0, 0])
+			placement.grid_position = Vector2i(pos_array[0], pos_array[1])
+			placement.horizontal = part_data.get("horizontal", true)
+			placement.enabled = part_data.get("enabled", true)
+
+			ship.add_part(placement)
+		else:
+			print("Warning: Unknown part type '", part_id, "' in saved ship")
+
+	# Recalculate metadata
+	ship._recalculate_metadata()
+
+	return ship

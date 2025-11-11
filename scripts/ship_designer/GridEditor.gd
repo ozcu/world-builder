@@ -116,6 +116,9 @@ func _input(event: InputEvent) -> void:
 		# Continuous painting while mouse button is held
 		if is_painting and current_tool == "tile" and current_tile:
 			paint_at_hover()
+		# Continuous painting for external parts (armor) while dragging
+		elif is_painting and current_tool == "part" and current_part and current_part.is_external:
+			paint_part_at_hover()
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
@@ -167,13 +170,13 @@ func update_preview() -> void:
 
 	elif current_tool == "part" and current_part:
 		hover_preview.texture = current_part.sprite
-		hover_preview.visible = can_place_current_part()
+		hover_preview.visible = true  # Always show preview
 
 		# Set color based on valid placement
 		if can_place_current_part():
 			hover_preview.modulate = Color(0, 1, 0, 0.6)  # Green = valid
 		else:
-			hover_preview.modulate = Color(1, 0, 0, 0.6)  # Red = invalid
+			hover_preview.modulate = Color(1, 0, 0, 0.5)  # Red transparent = invalid
 
 		# Handle rotation
 		if !current_orientation:
@@ -218,6 +221,22 @@ func paint_at_hover() -> void:
 	last_painted_cell = hover_position
 	place_tile(hover_position, current_tile)
 
+func paint_part_at_hover() -> void:
+	"""Continuously paint external parts (like armor) while dragging mouse"""
+	if hover_position.x < 0 or hover_position.y < 0:
+		return
+
+	# Only paint if we've moved to a new cell
+	if hover_position == last_painted_cell:
+		return
+
+	# Only paint if placement is valid
+	if !can_place_current_part():
+		return
+
+	last_painted_cell = hover_position
+	place_part(hover_position, current_part)
+
 func handle_click(_mouse_pos: Vector2) -> void:
 	if hover_position.x < 0 or hover_position.y < 0:
 		return
@@ -252,10 +271,11 @@ func place_part(pos: Vector2i, part: ShipPart) -> void:
 	placement.horizontal = current_orientation
 
 	if ship_definition.add_part(placement):
+		print("GridEditor: Placed ", part.part_name, " at ", pos)
 		refresh()
 		ship_modified.emit()
 	else:
-		print("Cannot place part - door connection requirements not met")
+		print("Cannot place part - space already occupied by another part")
 
 func erase_at(pos: Vector2i) -> void:
 	# Check if tile exists at position
