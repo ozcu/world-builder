@@ -195,7 +195,7 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	print("  Centering verification:")
 	if design.tile_positions.size() > 0:
 		var sample_pos = design.tile_positions[0]
-		var sample_pixel = sample_pos * ship_renderer.cell_size
+		var sample_pixel = Vector2(sample_pos) * float(ship_renderer.cell_size)
 		var sample_final = ship_renderer.position + sample_pixel
 		print("    Sample tile at grid ", sample_pos, " -> local pixel ", sample_pixel, " -> world ", sample_final)
 
@@ -204,7 +204,7 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	for i in design.parts.size():
 		var placement = design.parts[i]
 		var cells = placement.get_occupied_cells()
-		var part_center_grid = Vector2(placement.grid_position) + Vector2(placement.part.size) / 2.0
-		var part_center_world = ship_renderer.position + part_center_grid * ship_renderer.cell_size
+		var part_center_grid = Vector2(placement.grid_position.x, placement.grid_position.y) + Vector2(placement.part.size.x, placement.part.size.y) / 2.0
+		var part_center_world = ship_renderer.position + part_center_grid * float(ship_renderer.cell_size)
 		print("    Part ", i, ": ", placement.part.part_name, " at grid ", placement.grid_position,
 		      " rotation ", placement.rotation, "° -> world center ", part_center_world)
