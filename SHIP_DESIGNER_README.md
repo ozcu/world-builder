@@ -1,7 +1,7 @@
-# Ship Designer System - Phase 1A Complete
+# Ship Designer System - Phase 2 Complete
 
 ## Overview
-Foundation for the ship designer system with core data structures and mockup sprites.
+Complete ship designer system with interactive UI for visual ship construction using tiles and parts.
 
 ## Files Created
 
@@ -16,6 +16,18 @@ Foundation for the ship designer system with core data structures and mockup spr
 - `scripts/ship_designer/MockupGenerator.gd` - Generates placeholder sprites
 - `scripts/ship_designer/TestDataGenerator.gd` - Creates test tiles and parts
 - `scripts/ship_designer/ShipDesignerExample.gd` - Example usage demonstration
+- `scripts/ship_designer/ShipRenderer.gd` - Renders ShipDefinition visually
+
+### UI Components (Phase 2)
+- `scripts/ship_designer/ShipDesigner.gd` - Main UI controller
+- `scripts/ship_designer/GridEditor.gd` - Interactive grid with mouse placement
+- `scripts/ship_designer/TilePalette.gd` - Tile selection panel
+- `scripts/ship_designer/PartPalette.gd` - Part selection panel
+- `scripts/ship_designer/StatsPanel.gd` - Ship statistics display
+
+### Scenes
+- `scenes/ShipDesigner.tscn` - Complete UI layout (runnable with F6)
+- `scenes/TestShipDesigner.tscn` - Programmatic test scene
 
 ## Features Implemented
 
@@ -110,20 +122,78 @@ var json = ship.to_json()
 - **Orientation**: Horizontal or vertical only (no rotation)
 - **File Format**: JSON (.ship files)
 
-## Next Steps (Phase 2)
+## Phase 2 UI Features
 
-1. Create ShipDesigner UI scene
-2. Implement GridEditor for visual tile placement
-3. Create TilePalette and PartPalette UI
-4. Add mouse interaction for placing tiles/parts
-5. Add symmetry tools
-6. Add save/load functionality
+### Interactive Editor
+- **Mouse Placement**: Click to place tiles/parts on grid
+- **Hover Preview**: Visual preview showing valid/invalid placement (green/red)
+- **Grid Display**: 64x64 grid with 32x32 pixel cells
+- **Real-time Rendering**: Ship updates as you build
 
-## Testing
+### Palettes
+- **Tile Palette** (left panel): Select corridors, doors, airlocks by category
+- **Part Palette** (right panel): Select parts organized by type:
+  - Propulsion (thrusters)
+  - Energy (reactor, storage)
+  - Crew (bunks, quarters, bridge)
+  - Sensors
+  - Utility (tractor beam, cargo)
+  - Defense (armor)
 
-Run `ShipDesignerExample.gd` to see the system in action:
-- Creates a simple ship with corridors, airlock, thruster, and bunks
-- Validates the ship
-- Prints stats and JSON export
+### Toolbar Features
+- **Orientation Toggle**: Switch between horizontal/vertical part placement
+- **Erase Mode**: Remove tiles or parts
+- **Save/Load**: Persist ships to user://test_ship.ship
+- **Clear**: Start fresh ship
 
-All core data structures are ready for UI development!
+### Stats Panel (Bottom)
+- Real-time display of ship properties:
+  - Mass (kg)
+  - Thrust (N)
+  - Energy capacity (kW)
+  - Crew capacity
+  - Cargo capacity
+- Validation status with error tooltips
+
+### Validation Feedback
+- Green preview = valid placement
+- Red preview = invalid (doors not on corridors)
+- Status indicator shows ship completeness
+- Hover over status for error details
+
+## Next Steps (Phase 3 - Future)
+
+1. Add symmetry tools (mirror X/Y)
+2. Implement undo/redo
+3. Add file dialog for save/load
+4. Multi-select for bulk operations
+5. Copy/paste sections
+6. Ship preview/render to image
+7. Integration with runtime ship controller
+
+## How to Use
+
+### Option 1: Interactive UI (Recommended)
+1. Open `scenes/ShipDesigner.tscn` in Godot
+2. Press F6 to run the scene
+3. Use the left panel to select tiles (corridors, doors, airlocks)
+4. Click on the grid to place tiles
+5. Use the right panel to select parts (thrusters, crew quarters, etc.)
+6. Toggle orientation if needed (horizontal/vertical)
+7. Click to place parts - they must connect via doors to corridors
+8. Watch the bottom panel for real-time stats and validation
+9. Use Save/Load buttons to persist your designs
+
+### Option 2: Programmatic Test
+1. Open `scenes/TestShipDesigner.tscn`
+2. Press F6 to run
+3. See console output for validation and stats
+4. Visual rendering of programmatically created ship
+
+### Tips
+- Parts show green preview when placement is valid (doors connect to corridors)
+- Parts show red preview when invalid (doors don't connect)
+- Use Erase Mode to remove tiles or parts
+- Ship must have: corridor, airlock, and crew bunks to be valid
+
+The system is ready for pixel art sprite replacement - just swap the mockup textures!
