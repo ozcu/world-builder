@@ -70,11 +70,21 @@ func open_designer() -> void:
 
 	# Position in BOTTOM-LEFT corner
 	ship_designer_instance.position = Vector2(0, viewport_size.y - designer_size.y)
-	ship_designer_instance.size = designer_size
 
-	# NO SCALING - just set the size and let layout containers adapt
-	print("  Setting designer size to: ", designer_size, " pixels")
-	print("  Viewport size is: ", viewport_size, " pixels")
+	# Designer is designed to work at full viewport size, so scale it down to fit 1/4 size
+	var scale_x = designer_size.x / viewport_size.x
+	var scale_y = designer_size.y / viewport_size.y
+	var scale_factor = min(scale_x, scale_y)  # Use smaller scale to fit everything
+
+	ship_designer_instance.scale = Vector2(scale_factor, scale_factor)
+
+	# The actual rendered size will be viewport_size * scale_factor
+	# But we want it to take up designer_size space, so adjust the Control size
+	ship_designer_instance.size = viewport_size  # Let it think it's full size
+
+	print("  Designer size target: ", designer_size, " pixels")
+	print("  Viewport size: ", viewport_size, " pixels")
+	print("  Scale factor: ", scale_factor)
 
 	# Make background semi-transparent and fix anchors
 	var bg = ship_designer_instance.get_node("Background")
