@@ -84,14 +84,14 @@ func set_tiles(tile_dict: Dictionary) -> void:
 func add_category_label(text: String) -> void:
 	var label = Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 12)
+	label.add_theme_font_size_override("font_size", 9)  # Smaller: 12 -> 9
 	label.modulate = Color(0.7, 0.7, 0.7)
 	add_child(label)
 
 func add_tile_button(_tile_id: String, tile: ShipTile) -> void:
 	# Create a panel container for the entire button
 	var panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(180, 70)
+	panel.custom_minimum_size = Vector2(160, 50)  # Smaller: 180x70 -> 160x50
 	panel.size_flags_horizontal = Control.SIZE_FILL
 
 	# Add visible background style
@@ -119,7 +119,7 @@ func add_tile_button(_tile_id: String, tile: ShipTile) -> void:
 
 	# Create and add icon
 	var icon = TextureRect.new()
-	icon.custom_minimum_size = Vector2(56, 56)
+	icon.custom_minimum_size = Vector2(40, 40)  # Smaller: 56 -> 40
 	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 
@@ -136,6 +136,7 @@ func add_tile_button(_tile_id: String, tile: ShipTile) -> void:
 	# Create and add label
 	var text_label = Label.new()
 	text_label.text = tile.tile_name
+	text_label.add_theme_font_size_override("font_size", 10)  # Smaller font
 	text_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hbox.add_child(text_label)

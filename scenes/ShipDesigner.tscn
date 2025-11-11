@@ -82,7 +82,7 @@ size_flags_vertical = 3
 
 [node name="LeftPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 400)
+custom_minimum_size = Vector2(160, 300)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
@@ -124,7 +124,7 @@ script = ExtResource("2")
 
 [node name="RightPanel" type="PanelContainer" parent="MainLayout/ContentArea/RightSplit"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 400)
+custom_minimum_size = Vector2(160, 300)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 

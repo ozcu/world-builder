@@ -18,6 +18,12 @@ var current_orientation: bool = true  # true = horizontal
 var is_painting: bool = false  # Track if mouse button is held down
 var last_painted_cell: Vector2i = Vector2i(-1, -1)  # Prevent painting same cell multiple times
 
+# Zoom state
+var zoom_level: float = 1.0
+var min_zoom: float = 0.5
+var max_zoom: float = 3.0
+var zoom_step: float = 0.1
+
 # Visual elements
 var renderer: ShipRenderer
 var hover_preview: Sprite2D
@@ -131,6 +137,11 @@ func _input(event: InputEvent) -> void:
 			else:
 				is_painting = false
 				last_painted_cell = Vector2i(-1, -1)
+		# Handle middle mouse button zoom
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+			zoom_in()
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+			zoom_out()
 
 func update_hover(mouse_pos: Vector2) -> void:
 	# Convert mouse position to grid coordinates
@@ -338,6 +349,16 @@ func set_tool(tool: String, item = null) -> void:
 func set_orientation(horizontal: bool) -> void:
 	current_orientation = horizontal
 	update_preview()
+
+func zoom_in() -> void:
+	zoom_level = clamp(zoom_level + zoom_step, min_zoom, max_zoom)
+	scale = Vector2(zoom_level, zoom_level)
+	print("GridEditor: Zoom in to ", zoom_level)
+
+func zoom_out() -> void:
+	zoom_level = clamp(zoom_level - zoom_step, min_zoom, max_zoom)
+	scale = Vector2(zoom_level, zoom_level)
+	print("GridEditor: Zoom out to ", zoom_level)
 
 func refresh() -> void:
 	if renderer:
