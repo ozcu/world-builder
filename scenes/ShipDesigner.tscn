@@ -82,7 +82,7 @@ size_flags_vertical = 3
 
 [node name="LeftPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 400)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
@@ -98,6 +98,7 @@ script = ExtResource("3")
 
 [node name="CenterContainer" type="PanelContainer" parent="MainLayout/ContentArea"]
 layout_mode = 2
+custom_minimum_size = Vector2(400, 400)
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
@@ -118,7 +119,7 @@ script = ExtResource("2")
 
 [node name="RightPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 400)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
