@@ -158,14 +158,14 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	# Create new renderer
 	ship_renderer = ShipRenderer.new()
 	ship_renderer.ship_definition = design
-	ship_renderer.cell_size = 2  # Much smaller than designer (32 -> 2)
+	ship_renderer.cell_size = 8  # Scale down from designer (32 -> 8) for reasonable ship size
 	ship_renderer.auto_center = false  # We'll center manually
 	ship_renderer.z_index = -1  # Behind everything
 
-	# Calculate center offset manually
+	# Calculate center offset manually to center the ship on the Starship's origin
 	var bounds = design.get_bounds()
-	var ship_pixel_size = Vector2(bounds.size.x * 2, bounds.size.y * 2)  # cell_size = 2
-	var center_offset = -ship_pixel_size / 2.0 - Vector2(bounds.position.x * 2, bounds.position.y * 2)
+	var ship_pixel_size = Vector2(bounds.size.x * 8, bounds.size.y * 8)  # cell_size = 8
+	var center_offset = -ship_pixel_size / 2.0 - Vector2(bounds.position.x * 8, bounds.position.y * 8)
 	ship_renderer.position = center_offset
 
 	add_child(ship_renderer)
@@ -184,7 +184,7 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	# Debug: print first few tile positions
 	for i in min(3, design.tile_positions.size()):
 		var pos = design.tile_positions[i]
-		var pixel_pos = Vector2(pos.x * ship_renderer.cell_size, pos.y * ship_renderer.cell_size)
+		var pixel_pos = Vector2(pos.x * 8, pos.y * 8)  # cell_size = 8
 		print("  Tile ", i, " at grid ", pos, " -> pixel ", pixel_pos)
 
 	# Debug: print all part placements

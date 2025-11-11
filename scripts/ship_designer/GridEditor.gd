@@ -184,7 +184,9 @@ func update_preview() -> void:
 		hover_preview.visible = false
 		return
 
-	hover_preview.position = Vector2(hover_position.x * cell_size, hover_position.y * cell_size)
+	# Base grid position (will be adjusted for parts with rotation offset)
+	var base_position = Vector2(hover_position.x * cell_size, hover_position.y * cell_size)
+	hover_preview.position = base_position
 
 	if current_tool == "tile" and current_tile:
 		# For corridors, show auto-tiled preview
@@ -203,16 +205,10 @@ func update_preview() -> void:
 		hover_preview.texture = current_part.sprite
 		hover_preview.visible = true  # Always show preview
 
-		# Set color based on valid placement
-		if can_place_current_part():
-			hover_preview.modulate = Color(0, 1, 0, 0.6)  # Green = valid
-		else:
-			hover_preview.modulate = Color(1, 0, 0, 0.5)  # Red transparent = invalid
-
-		# Apply rotation and position offset to keep preview at same grid cell
+		# Apply rotation FIRST
 		hover_preview.rotation = deg_to_rad(current_rotation)
 
-		# Apply same position offset as renderer to keep sprite at grid cell
+		# Calculate rotation offset to keep sprite at same grid cell
 		var size = current_part.size
 		var rotation_offset = Vector2.ZERO
 		match current_rotation:
@@ -226,7 +222,14 @@ func update_preview() -> void:
 				# Rotated 270°: shift right by height
 				rotation_offset = Vector2(size.y * cell_size, 0)
 
-		hover_preview.position = Vector2(hover_position.x * cell_size, hover_position.y * cell_size) + rotation_offset
+		# Set position with rotation offset
+		hover_preview.position = base_position + rotation_offset
+
+		# Set color based on valid placement (after position is set)
+		if can_place_current_part():
+			hover_preview.modulate = Color(0, 1, 0, 0.6)  # Green = valid
+		else:
+			hover_preview.modulate = Color(1, 0, 0, 0.5)  # Red transparent = invalid
 
 	elif current_tool == "erase":
 		hover_preview.visible = false
