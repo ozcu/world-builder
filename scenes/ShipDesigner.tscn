@@ -83,10 +83,12 @@ size_flags_vertical = 3
 [node name="LeftPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
 layout_mode = 2
 custom_minimum_size = Vector2(200, 0)
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/LeftPanel"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="TilePalette" type="VBoxContainer" parent="MainLayout/ContentArea/LeftPanel/ScrollContainer"]
 layout_mode = 2
@@ -114,10 +116,12 @@ script = ExtResource("2")
 [node name="RightPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
 layout_mode = 2
 custom_minimum_size = Vector2(200, 0)
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/RightPanel"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="PartPalette" type="VBoxContainer" parent="MainLayout/ContentArea/RightPanel/ScrollContainer"]
 layout_mode = 2

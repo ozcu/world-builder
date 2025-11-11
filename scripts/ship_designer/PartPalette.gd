@@ -9,6 +9,15 @@ var part_buttons: Array = []
 var selected_button: Control = null
 
 func _ready() -> void:
+	# Add bright debug background to confirm palette is visible
+	var debug_bg = ColorRect.new()
+	debug_bg.color = Color(0.3, 0.1, 0.3, 1.0)  # Dark purple background
+	debug_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	debug_bg.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	debug_bg.z_index = -1
+	add_child(debug_bg)
+	move_child(debug_bg, 0)  # Behind everything
+
 	# Add label
 	var label = Label.new()
 	label.text = "PARTS"
