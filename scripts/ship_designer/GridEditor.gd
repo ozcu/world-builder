@@ -195,7 +195,7 @@ func can_place_current_part() -> bool:
 
 	return ship_definition.can_place_part(placement)
 
-func handle_click(mouse_pos: Vector2) -> void:
+func handle_click(_mouse_pos: Vector2) -> void:
 	if hover_position.x < 0 or hover_position.y < 0:
 		return
 

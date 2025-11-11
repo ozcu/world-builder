@@ -79,7 +79,7 @@ func add_category_label(text: String) -> void:
 	label.modulate = Color(0.7, 0.7, 0.7)
 	add_child(label)
 
-func add_tile_button(tile_id: String, tile: ShipTile) -> void:
+func add_tile_button(_tile_id: String, tile: ShipTile) -> void:
 	# Create a panel container for the entire button
 	var panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(180, 70)
@@ -88,7 +88,10 @@ func add_tile_button(tile_id: String, tile: ShipTile) -> void:
 	# Add visible background style
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.2, 0.2, 0.25, 1.0)
-	style.border_width_all = 2
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
 	style.border_color = Color(0.4, 0.4, 0.5, 1.0)
 	panel.add_theme_stylebox_override("panel", style)
 
@@ -139,7 +142,7 @@ func add_tile_button(tile_id: String, tile: ShipTile) -> void:
 	print("TilePalette: Added tile panel for ", tile.tile_name)
 	print("  Panel - Size: ", panel.size, ", MinSize: ", panel.custom_minimum_size, ", Visible: ", panel.visible)
 	print("  Icon - Size: ", icon.size, ", MinSize: ", icon.custom_minimum_size, ", Texture: ", icon.texture != null)
-	print("  Style - BgColor: ", style.bg_color, ", BorderWidth: ", style.border_width_all)
+	print("  Style - BgColor: ", style.bg_color, ", BorderWidth: 2px")
 
 func _on_panel_input(event: InputEvent, tile: ShipTile, panel: Control) -> void:
 	if event is InputEventMouseButton:
