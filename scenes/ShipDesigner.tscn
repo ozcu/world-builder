@@ -93,16 +93,19 @@ size_flags_vertical = 3
 [node name="TilePalette" type="VBoxContainer" parent="MainLayout/ContentArea/LeftPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("3")
 
 [node name="CenterContainer" type="PanelContainer" parent="MainLayout/ContentArea"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="GridEditorScroll" type="ScrollContainer" parent="MainLayout/ContentArea/CenterContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 2
 vertical_scroll_mode = 2
 
@@ -126,6 +129,7 @@ size_flags_vertical = 3
 [node name="PartPalette" type="VBoxContainer" parent="MainLayout/ContentArea/RightPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("4")
 
 [node name="BottomPanel" type="PanelContainer" parent="MainLayout"]
