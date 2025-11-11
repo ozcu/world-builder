@@ -81,6 +81,13 @@ func add_tile_button(tile_id: String, tile: ShipTile) -> void:
 	var panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(180, 70)
 
+	# Add visible background style
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.2, 0.2, 0.25, 1.0)
+	style.border_width_all = 2
+	style.border_color = Color(0.4, 0.4, 0.5, 1.0)
+	panel.add_theme_stylebox_override("panel", style)
+
 	# Create margin for padding
 	var margin = MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 5)

@@ -42,6 +42,8 @@ func _ready() -> void:
 	hover_preview.visible = false
 	add_child(hover_preview)
 
+	print("GridEditor: Ready complete, background and renderer added")
+
 func create_background() -> void:
 	# Load star background texture
 	var star_texture = load("res://assets/textures/star-background.jpg")
