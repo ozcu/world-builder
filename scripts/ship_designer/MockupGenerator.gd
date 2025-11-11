@@ -21,10 +21,10 @@ static func create_mockup_texture(size: Vector2i, color: Color, border_color: Co
 static func create_corridor_mockup(connections: Array) -> ImageTexture:
 	var size = Vector2i(32, 32)
 	var image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
-	var floor_color = Color(0.3, 0.3, 0.35)  # Dark gray
-	var wall_color = Color(0.5, 0.5, 0.5)    # Light gray
+	var floor_color = Color(0.3, 0.3, 0.35, 0.7)  # Semi-transparent dark gray
+	var wall_color = Color(0.5, 0.5, 0.5, 0.9)    # Semi-transparent light gray
 
-	# Fill with floor color
+	# Fill with transparent floor color
 	image.fill(floor_color)
 
 	# Draw walls on sides that don't connect
@@ -60,8 +60,8 @@ static func create_corridor_mockup(connections: Array) -> ImageTexture:
 static func create_door_mockup() -> ImageTexture:
 	var size = Vector2i(32, 32)
 	var image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
-	var floor_color = Color(0.3, 0.3, 0.35)
-	var door_color = Color(0.7, 0.5, 0.2)  # Brown/orange
+	var floor_color = Color(0.3, 0.3, 0.35, 0.7)
+	var door_color = Color(0.7, 0.5, 0.2, 0.85)  # Semi-transparent brown/orange
 
 	image.fill(floor_color)
 
@@ -85,8 +85,8 @@ static func create_door_mockup() -> ImageTexture:
 static func create_airlock_mockup() -> ImageTexture:
 	var size = Vector2i(32, 32)
 	var image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
-	var bg_color = Color(0.2, 0.2, 0.25)
-	var airlock_color = Color(0.8, 0.8, 0.2)  # Yellow
+	var bg_color = Color(0.2, 0.2, 0.25, 0.7)
+	var airlock_color = Color(0.8, 0.8, 0.2, 0.9)  # Semi-transparent yellow
 
 	image.fill(bg_color)
 
@@ -108,8 +108,11 @@ static func create_part_mockup(size_cells: Vector2i, color: Color, door_position
 	var pixel_size = Vector2i(size_cells.x * 32, size_cells.y * 32)
 	var image = Image.create(pixel_size.x, pixel_size.y, false, Image.FORMAT_RGBA8)
 
-	# Fill with color
-	image.fill(color)
+	# Make color semi-transparent
+	var transparent_color = Color(color.r, color.g, color.b, 0.8)
+
+	# Fill with semi-transparent color
+	image.fill(transparent_color)
 
 	# Draw border
 	var border_color = Color.WHITE

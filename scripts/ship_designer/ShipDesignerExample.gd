@@ -27,15 +27,16 @@ func create_example_ship() -> ShipDefinition:
 	var tiles = TestDataGenerator.create_test_tiles()
 	var parts = TestDataGenerator.create_test_parts()
 
-	# Build a simple ship layout
+	# Build a simple ship layout with auto-tiling corridors
 	# Corridor spine (vertical): (10, 10) to (10, 15)
 	for y in range(10, 16):
-		ship.set_tile(Vector2i(10, y), tiles["corridor_straight_v"])
+		ship.set_tile(Vector2i(10, y), tiles["corridor"])
+		AutoTiler.update_corridor_and_neighbors(ship, Vector2i(10, y))
 
 	# Add horizontal corridor branch at (10, 12)
-	ship.set_tile(Vector2i(10, 12), tiles["corridor_t"])
 	for x in range(11, 14):
-		ship.set_tile(Vector2i(x, 12), tiles["corridor_straight_h"])
+		ship.set_tile(Vector2i(x, 12), tiles["corridor"])
+		AutoTiler.update_corridor_and_neighbors(ship, Vector2i(x, 12))
 
 	# Add airlock at bottom (10, 16)
 	ship.set_tile(Vector2i(10, 16), tiles["airlock"])

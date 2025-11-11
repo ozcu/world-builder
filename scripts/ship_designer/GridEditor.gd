@@ -20,10 +20,14 @@ var current_orientation: bool = true  # true = horizontal
 var renderer: ShipRenderer
 var hover_preview: Sprite2D
 var hover_position: Vector2i = Vector2i(-1, -1)
+var background_sprite: Sprite2D
 
 func _ready() -> void:
 	if !ship_definition:
 		ship_definition = ShipDefinition.new()
+
+	# Load and create tiled background
+	create_background()
 
 	# Create renderer
 	renderer = ShipRenderer.new()
@@ -37,6 +41,30 @@ func _ready() -> void:
 	hover_preview.modulate = Color(1, 1, 1, 0.6)
 	hover_preview.visible = false
 	add_child(hover_preview)
+
+func create_background() -> void:
+	# Load star background texture
+	var star_texture = load("res://star-background.jpg")
+	if star_texture:
+		background_sprite = Sprite2D.new()
+		background_sprite.texture = star_texture
+		background_sprite.centered = false
+		background_sprite.z_index = -100  # Behind everything
+
+		# Tile the background to cover the grid area
+		var grid_pixel_size = Vector2(grid_size.x * cell_size, grid_size.y * cell_size)
+		var texture_size = star_texture.get_size()
+
+		# Calculate how many tiles we need
+		var tiles_x = ceil(grid_pixel_size.x / texture_size.x)
+		var tiles_y = ceil(grid_pixel_size.y / texture_size.y)
+
+		# Scale to fit if needed, or repeat
+		background_sprite.region_enabled = true
+		background_sprite.region_rect = Rect2(0, 0, grid_pixel_size.x, grid_pixel_size.y)
+		background_sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+
+		add_child(background_sprite)
 
 func _draw() -> void:
 	if show_grid:
@@ -141,6 +169,11 @@ func handle_click(mouse_pos: Vector2) -> void:
 
 func place_tile(pos: Vector2i, tile: ShipTile) -> void:
 	ship_definition.set_tile(pos, tile)
+
+	# Auto-tile corridors
+	if tile.tile_type == PartCategory.TileType.CORRIDOR:
+		AutoTiler.update_corridor_and_neighbors(ship_definition, pos)
+
 	refresh()
 	ship_modified.emit()
 
@@ -159,7 +192,20 @@ func place_part(pos: Vector2i, part: ShipPart) -> void:
 func erase_at(pos: Vector2i) -> void:
 	# Check if tile exists at position
 	if ship_definition.has_tile(pos):
+		var tile = ship_definition.get_tile(pos)
+		var was_corridor = (tile != null and tile.tile_type == PartCategory.TileType.CORRIDOR)
+
 		ship_definition.remove_tile(pos)
+
+		# Update neighboring corridors if we removed a corridor
+		if was_corridor:
+			var directions = [Vector2i(0, -1), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(1, 0)]
+			for dir in directions:
+				var neighbor_pos = pos + dir
+				var neighbor_tile = ship_definition.get_tile(neighbor_pos)
+				if neighbor_tile and neighbor_tile.tile_type == PartCategory.TileType.CORRIDOR:
+					AutoTiler.update_corridor_and_neighbors(ship_definition, neighbor_pos)
+
 		refresh()
 		ship_modified.emit()
 		return

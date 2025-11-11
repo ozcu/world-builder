@@ -5,50 +5,14 @@ class_name TestDataGenerator extends Node
 static func create_test_tiles() -> Dictionary:
 	var tiles = {}
 
-	# Corridor - Straight Horizontal
-	var corridor_h = ShipTile.new()
-	corridor_h.tile_id = "corridor_straight_h"
-	corridor_h.tile_name = "Corridor (Horizontal)"
-	corridor_h.tile_type = PartCategory.TileType.CORRIDOR
-	corridor_h.connections = [Vector2i(-1, 0), Vector2i(1, 0)]  # Left and right
-	corridor_h.sprite = MockupGenerator.create_corridor_mockup(corridor_h.connections)
-	tiles["corridor_straight_h"] = corridor_h
-
-	# Corridor - Straight Vertical
-	var corridor_v = ShipTile.new()
-	corridor_v.tile_id = "corridor_straight_v"
-	corridor_v.tile_name = "Corridor (Vertical)"
-	corridor_v.tile_type = PartCategory.TileType.CORRIDOR
-	corridor_v.connections = [Vector2i(0, -1), Vector2i(0, 1)]  # Up and down
-	corridor_v.sprite = MockupGenerator.create_corridor_mockup(corridor_v.connections)
-	tiles["corridor_straight_v"] = corridor_v
-
-	# Corridor - L Corner
-	var corridor_l = ShipTile.new()
-	corridor_l.tile_id = "corridor_corner_l"
-	corridor_l.tile_name = "Corridor (L-Corner)"
-	corridor_l.tile_type = PartCategory.TileType.CORRIDOR
-	corridor_l.connections = [Vector2i(1, 0), Vector2i(0, 1)]  # Right and down
-	corridor_l.sprite = MockupGenerator.create_corridor_mockup(corridor_l.connections)
-	tiles["corridor_corner_l"] = corridor_l
-
-	# Corridor - T Junction
-	var corridor_t = ShipTile.new()
-	corridor_t.tile_id = "corridor_t"
-	corridor_t.tile_name = "Corridor (T-Junction)"
-	corridor_t.tile_type = PartCategory.TileType.CORRIDOR
-	corridor_t.connections = [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, 1)]  # 3-way
-	corridor_t.sprite = MockupGenerator.create_corridor_mockup(corridor_t.connections)
-	tiles["corridor_t"] = corridor_t
-
-	# Corridor - X Junction
-	var corridor_x = ShipTile.new()
-	corridor_x.tile_id = "corridor_x"
-	corridor_x.tile_name = "Corridor (X-Junction)"
-	corridor_x.tile_type = PartCategory.TileType.CORRIDOR
-	corridor_x.connections = [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]  # 4-way
-	corridor_x.sprite = MockupGenerator.create_corridor_mockup(corridor_x.connections)
-	tiles["corridor_x"] = corridor_x
+	# Generic Corridor - Auto-tiles based on neighbors
+	var corridor = ShipTile.new()
+	corridor.tile_id = "corridor"
+	corridor.tile_name = "Corridor"
+	corridor.tile_type = PartCategory.TileType.CORRIDOR
+	corridor.connections = []  # Will be determined by AutoTiler
+	corridor.sprite = MockupGenerator.create_corridor_mockup([])  # Placeholder
+	tiles["corridor"] = corridor
 
 	# Door
 	var door = ShipTile.new()
