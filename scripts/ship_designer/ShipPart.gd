@@ -14,10 +14,10 @@ class_name ShipPart extends Resource
 
 # Door system - relative positions within part bounds
 # Example: For a 2x2 part, door at (1, 0) means top-center
-@export var door_positions: Array[Vector2i] = []
+@export var door_positions: Array = []
 # Direction each door faces (must match door_positions length)
 # (0, -1) = up, (0, 1) = down, (-1, 0) = left, (1, 0) = right
-@export var door_directions: Array[Vector2i] = []
+@export var door_directions: Array = []
 
 # External parts (like armor) don't need doors
 @export var is_external: bool = false

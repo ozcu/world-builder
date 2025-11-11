@@ -10,7 +10,7 @@ class_name ShipTile extends Resource
 
 # Which sides can connect (for corridor routing)
 # Array of Vector2i: [(1,0), (-1,0), (0,1), (0,-1)] for 4-way junction
-@export var connections: Array[Vector2i] = []
+@export var connections: Array = []
 
 # Visual variant (for same type but different look)
 @export var variant: int = 0

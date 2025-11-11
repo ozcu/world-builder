@@ -6,11 +6,11 @@ class_name ShipDefinition extends Resource
 
 # Tiles stored as Dictionary: Vector2i -> ShipTile
 # We store as Array for export, convert to Dictionary internally
-@export var tile_positions: Array[Vector2i] = []
-@export var tile_data: Array[ShipTile] = []
+@export var tile_positions: Array = []
+@export var tile_data: Array = []
 
 # Parts placement
-@export var parts: Array[PartPlacement] = []
+@export var parts: Array = []
 
 # Calculated metadata (updated on validate)
 @export var metadata: Dictionary = {
