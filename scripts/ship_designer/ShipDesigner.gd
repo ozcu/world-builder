@@ -13,6 +13,8 @@ extends Control
 @onready var clear_button: Button = $MainLayout/TopPanel/Toolbar/ClearButton
 @onready var orientation_button: Button = $MainLayout/TopPanel/Toolbar/OrientationButton
 @onready var erase_button: Button = $MainLayout/TopPanel/Toolbar/EraseButton
+@onready var apply_button: Button = $MainLayout/TopPanel/Toolbar/ApplyButton
+@onready var close_button: Button = $MainLayout/TopPanel/Toolbar/CloseButton
 
 # Current ship being edited
 var current_ship: ShipDefinition
@@ -105,6 +107,12 @@ func connect_signals() -> void:
 
 	if erase_button:
 		erase_button.toggled.connect(_on_erase_toggled)
+
+	if apply_button:
+		apply_button.pressed.connect(_on_apply_pressed)
+
+	if close_button:
+		close_button.pressed.connect(_on_close_pressed)
 
 func _on_tile_selected(tile: ShipTile) -> void:
 	selected_tool = "tile"
@@ -222,3 +230,34 @@ func _on_erase_toggled(pressed: bool) -> void:
 			_on_tile_selected(selected_tile)
 		elif selected_part:
 			_on_part_selected(selected_part)
+
+func _on_apply_pressed() -> void:
+	"""Apply the current ship design to the player's Starship"""
+	# Find the ShipDesignerManager and tell it to apply
+	var manager = _find_designer_manager()
+	if manager and manager.has_method("apply_design_to_starship"):
+		manager.apply_design_to_starship()
+		print("ShipDesigner: Applied design to Starship")
+	else:
+		print("ShipDesigner: Could not find ShipDesignerManager")
+
+func _on_close_pressed() -> void:
+	"""Close the ship designer panel"""
+	var manager = _find_designer_manager()
+	if manager and manager.has_method("close_designer"):
+		manager.close_designer()
+	else:
+		print("ShipDesigner: Could not find ShipDesignerManager")
+
+func _find_designer_manager() -> Node:
+	var root = get_tree().root
+	return _find_node_by_name(root, "ShipDesignerManager")
+
+func _find_node_by_name(node: Node, target_name: String) -> Node:
+	if node.name == target_name:
+		return node
+	for child in node.get_children():
+		var result = _find_node_by_name(child, target_name)
+		if result != null:
+			return result
+	return null

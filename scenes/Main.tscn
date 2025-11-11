@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dpqo64f6h1bqx"]
+[gd_scene load_steps=12 format=3 uid="uid://dpqo64f6h1bqx"]
 
 [ext_resource type="Script" uid="uid://b4xtnfl6pe464" path="res://scripts/SolarSystem.gd" id="1_solar"]
 [ext_resource type="PackedScene" path="res://scenes/Planet2D.tscn" id="2_planet"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/NPCShip1.tscn" id="8_npcship1"]
 [ext_resource type="PackedScene" path="res://scenes/NPCShip3.tscn" id="10_npcship3"]
 [ext_resource type="PackedScene" path="res://scenes/NPCShip4.tscn" id="11_npcship4"]
+[ext_resource type="Script" path="res://scripts/ShipDesignerManager.gd" id="12_shipdesignermanager"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_solar")
@@ -46,6 +47,9 @@ position = Vector2(2048, 2048)
 zoom = Vector2(0.22, 0.22)
 
 [node name="StarshipHUD" parent="." instance=ExtResource("5_hud")]
+
+[node name="ShipDesignerManager" type="CanvasLayer" parent="."]
+script = ExtResource("12_shipdesignermanager")
 
 [node name="SpaceStation1" parent="." instance=ExtResource("7_station")]
 position = Vector2(3600, 800)

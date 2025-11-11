@@ -76,6 +76,17 @@ layout_mode = 2
 text = "Erase Mode"
 toggle_mode = true
 
+[node name="Separator3" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+
+[node name="ApplyButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Apply to Ship"
+
+[node name="CloseButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Close"
+
 [node name="ContentArea" type="HSplitContainer" parent="MainLayout"]
 layout_mode = 2
 size_flags_vertical = 3

@@ -129,3 +129,27 @@ func get_ship_velocity() -> Vector2:
 
 func get_speed() -> float:
 	return ship_velocity.length()
+
+# Ship design system
+var ship_definition: ShipDefinition = null
+var ship_renderer: ShipRenderer = null
+
+func apply_ship_design(design: ShipDefinition) -> void:
+	"""Apply a ship design from the ship designer to this starship"""
+	ship_definition = design
+
+	# Remove old renderer if exists
+	if ship_renderer:
+		ship_renderer.queue_free()
+
+	# Create new renderer
+	ship_renderer = ShipRenderer.new()
+	ship_renderer.ship_definition = design
+	ship_renderer.cell_size = 2  # Much smaller than designer (32 -> 2)
+	ship_renderer.auto_center = true
+	ship_renderer.z_index = -1  # Behind thruster sprites
+	add_child(ship_renderer)
+
+	print("Starship: Applied ship design '", design.ship_name, "'")
+	print("  Tiles: ", design.tile_positions.size())
+	print("  Parts: ", design.parts.size())
