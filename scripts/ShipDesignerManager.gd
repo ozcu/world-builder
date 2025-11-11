@@ -64,13 +64,18 @@ func open_designer() -> void:
 	ship_designer_instance.grow_horizontal = Control.GROW_DIRECTION_END
 	ship_designer_instance.grow_vertical = Control.GROW_DIRECTION_END
 
-	# Make it 1/4 of screen width, full height
+	# Make it 1/4 of screen width AND 1/4 of screen height (1/16 total area)
 	var viewport_size = get_viewport().get_visible_rect().size
-	var designer_size = Vector2(viewport_size.x * 0.25, viewport_size.y)  # 1/4 width, full height
+	var designer_size = Vector2(viewport_size.x * 0.25, viewport_size.y * 0.25)  # 1/4 width, 1/4 height
 
-	# Position on LEFT side of screen
-	ship_designer_instance.position = Vector2(0, 0)
+	# Position in BOTTOM-LEFT corner
+	ship_designer_instance.position = Vector2(0, viewport_size.y - designer_size.y)
 	ship_designer_instance.size = designer_size
+
+	# Scale down the content to fit the smaller window
+	# Designer is designed for ~1200x800, so scale to fit 1/4 screen
+	var scale_factor = min(designer_size.x / 1200.0, designer_size.y / 800.0)
+	ship_designer_instance.scale = Vector2(scale_factor, scale_factor)
 
 	# Make background semi-transparent and fix anchors
 	var bg = ship_designer_instance.get_node("Background")
