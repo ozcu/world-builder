@@ -23,6 +23,9 @@ func _ready() -> void:
 func set_tiles(tile_dict: Dictionary) -> void:
 	tiles = tile_dict
 
+	print("=== TilePalette.set_tiles() called ===")
+	print("TilePalette container - Size: ", size, ", Visible: ", visible, ", In tree: ", is_inside_tree())
+
 	# Clear existing buttons
 	for button in tile_buttons:
 		button.queue_free()
@@ -80,6 +83,7 @@ func add_tile_button(tile_id: String, tile: ShipTile) -> void:
 	# Create a panel container for the entire button
 	var panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(180, 70)
+	panel.size_flags_horizontal = Control.SIZE_FILL
 
 	# Add visible background style
 	var style = StyleBoxFlat.new()
@@ -133,6 +137,9 @@ func add_tile_button(tile_id: String, tile: ShipTile) -> void:
 	tile_buttons.append(panel)
 
 	print("TilePalette: Added tile panel for ", tile.tile_name)
+	print("  Panel - Size: ", panel.size, ", MinSize: ", panel.custom_minimum_size, ", Visible: ", panel.visible)
+	print("  Icon - Size: ", icon.size, ", MinSize: ", icon.custom_minimum_size, ", Texture: ", icon.texture != null)
+	print("  Style - BgColor: ", style.bg_color, ", BorderWidth: ", style.border_width_all)
 
 func _on_panel_input(event: InputEvent, tile: ShipTile, panel: Control) -> void:
 	if event is InputEventMouseButton:

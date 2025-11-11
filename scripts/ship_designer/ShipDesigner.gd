@@ -43,6 +43,19 @@ func setup_ui() -> void:
 	print("Tiles loaded: ", tiles.keys())
 	print("Parts loaded: ", parts.keys())
 
+	# Debug UI hierarchy
+	print("\n=== UI Hierarchy Debug ===")
+	var grid_editor_control = $MainLayout/ContentArea/CenterContainer/GridEditorScroll/GridEditorControl
+	if grid_editor_control:
+		print("GridEditorControl - Size: ", grid_editor_control.size, ", MinSize: ", grid_editor_control.custom_minimum_size, ", Visible: ", grid_editor_control.visible)
+	var left_panel = $MainLayout/ContentArea/LeftPanel
+	if left_panel:
+		print("LeftPanel - Size: ", left_panel.size, ", MinSize: ", left_panel.custom_minimum_size, ", Visible: ", left_panel.visible)
+	var right_panel = $MainLayout/ContentArea/RightPanel
+	if right_panel:
+		print("RightPanel - Size: ", right_panel.size, ", MinSize: ", right_panel.custom_minimum_size, ", Visible: ", right_panel.visible)
+	print("=========================\n")
+
 	if tile_palette:
 		tile_palette.set_tiles(tiles)
 		print("Tile palette set with ", tiles.size(), " tiles")

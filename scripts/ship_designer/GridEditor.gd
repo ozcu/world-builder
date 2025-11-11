@@ -42,7 +42,26 @@ func _ready() -> void:
 	hover_preview.visible = false
 	add_child(hover_preview)
 
+	# Add a visual debug marker at origin (using Sprite2D with generated texture)
+	var debug_image = Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	debug_image.fill(Color.RED)
+	var debug_texture = ImageTexture.create_from_image(debug_image)
+	var debug_marker = Sprite2D.new()
+	debug_marker.texture = debug_texture
+	debug_marker.centered = false
+	debug_marker.position = Vector2(0, 0)
+	debug_marker.z_index = 100  # On top of everything
+	add_child(debug_marker)
+	print("GridEditor: Added red debug marker at (0,0) - 64x64")
+
 	print("GridEditor: Ready complete, background and renderer added")
+	print("GridEditor children count: ", get_child_count())
+	print("GridEditor - Position: ", position, ", Global position: ", global_position)
+	if background_sprite:
+		print("Background sprite - Position: ", background_sprite.position, ", Visible: ", background_sprite.visible, ", Z-index: ", background_sprite.z_index)
+		print("  Texture: ", background_sprite.texture != null, ", Region: ", background_sprite.region_rect)
+	if renderer:
+		print("Renderer - Children: ", renderer.get_child_count(), ", Visible: ", renderer.visible)
 
 func create_background() -> void:
 	# Load star background texture

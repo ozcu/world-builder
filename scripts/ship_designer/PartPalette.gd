@@ -23,6 +23,9 @@ func _ready() -> void:
 func set_parts(parts_dict: Dictionary) -> void:
 	parts = parts_dict
 
+	print("=== PartPalette.set_parts() called ===")
+	print("PartPalette container - Size: ", size, ", Visible: ", visible, ", In tree: ", is_inside_tree())
+
 	# Clear existing buttons
 	for button in part_buttons:
 		button.queue_free()
@@ -73,6 +76,7 @@ func add_part_button(part_id: String, part: ShipPart) -> void:
 	# Create a panel container for the entire button
 	var panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(180, 70)
+	panel.size_flags_horizontal = Control.SIZE_FILL
 
 	# Add visible background style
 	var style = StyleBoxFlat.new()
@@ -120,6 +124,9 @@ func add_part_button(part_id: String, part: ShipPart) -> void:
 	part_buttons.append(panel)
 
 	print("PartPalette: Added part panel for ", part.part_name)
+	print("  Panel - Size: ", panel.size, ", MinSize: ", panel.custom_minimum_size, ", Visible: ", panel.visible)
+	print("  Icon - Size: ", icon.size, ", MinSize: ", icon.custom_minimum_size, ", Texture: ", icon.texture != null)
+	print("  Style - BgColor: ", style.bg_color, ", BorderWidth: ", style.border_width_all)
 
 func _on_panel_input(event: InputEvent, part: ShipPart, panel: Control) -> void:
 	if event is InputEventMouseButton:
