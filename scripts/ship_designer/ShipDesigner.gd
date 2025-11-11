@@ -1,0 +1,181 @@
+# res://scripts/ship_designer/ShipDesigner.gd
+# Main ship designer UI controller
+extends Control
+
+# UI References
+@onready var grid_editor: Node2D = $MainLayout/ContentArea/CenterContainer/GridEditorScroll/GridEditor
+@onready var tile_palette: Control = $MainLayout/ContentArea/LeftPanel/ScrollContainer/TilePalette
+@onready var part_palette: Control = $MainLayout/ContentArea/RightPanel/ScrollContainer/PartPalette
+@onready var stats_panel: Control = $MainLayout/BottomPanel/StatsPanel
+@onready var toolbar: Control = $MainLayout/TopPanel/Toolbar
+@onready var save_button: Button = $MainLayout/TopPanel/Toolbar/SaveButton
+@onready var load_button: Button = $MainLayout/TopPanel/Toolbar/LoadButton
+@onready var clear_button: Button = $MainLayout/TopPanel/Toolbar/ClearButton
+@onready var orientation_button: Button = $MainLayout/TopPanel/Toolbar/OrientationButton
+@onready var erase_button: Button = $MainLayout/TopPanel/Toolbar/EraseButton
+
+# Current ship being edited
+var current_ship: ShipDefinition
+
+# Editor state
+var selected_tool: String = "tile"  # "tile", "part", "erase"
+var selected_tile: ShipTile = null
+var selected_part: ShipPart = null
+var part_orientation_horizontal: bool = true
+
+func _ready() -> void:
+	# Initialize new ship
+	current_ship = ShipDefinition.new()
+	current_ship.ship_name = "New Ship"
+
+	# Setup UI
+	setup_ui()
+
+	# Connect signals
+	connect_signals()
+
+func setup_ui() -> void:
+	# Initialize palettes with test data
+	var tiles = TestDataGenerator.create_test_tiles()
+	var parts = TestDataGenerator.create_test_parts()
+
+	if tile_palette:
+		tile_palette.set_tiles(tiles)
+
+	if part_palette:
+		part_palette.set_parts(parts)
+
+	if grid_editor:
+		grid_editor.ship_definition = current_ship
+
+	update_stats()
+
+func connect_signals() -> void:
+	if tile_palette:
+		tile_palette.tile_selected.connect(_on_tile_selected)
+
+	if part_palette:
+		part_palette.part_selected.connect(_on_part_selected)
+
+	if grid_editor:
+		grid_editor.ship_modified.connect(_on_ship_modified)
+
+	# Toolbar buttons
+	if save_button:
+		save_button.pressed.connect(_on_save_pressed)
+
+	if load_button:
+		load_button.pressed.connect(_on_load_pressed)
+
+	if clear_button:
+		clear_button.pressed.connect(_on_clear_pressed)
+
+	if orientation_button:
+		orientation_button.toggled.connect(_on_orientation_toggled)
+
+	if erase_button:
+		erase_button.toggled.connect(_on_erase_toggled)
+
+func _on_tile_selected(tile: ShipTile) -> void:
+	selected_tool = "tile"
+	selected_tile = tile
+	selected_part = null
+	if grid_editor:
+		grid_editor.set_tool("tile", tile)
+
+func _on_part_selected(part: ShipPart) -> void:
+	selected_tool = "part"
+	selected_tile = null
+	selected_part = part
+	if grid_editor:
+		grid_editor.set_tool("part", part)
+
+func _on_ship_modified() -> void:
+	update_stats()
+
+func update_stats() -> void:
+	if !stats_panel:
+		return
+
+	current_ship._recalculate_metadata()
+	var validation = current_ship.validate()
+
+	stats_panel.update_stats(current_ship.metadata, validation)
+
+func toggle_orientation() -> void:
+	part_orientation_horizontal = !part_orientation_horizontal
+	if grid_editor:
+		grid_editor.set_orientation(part_orientation_horizontal)
+
+func save_ship(filepath: String) -> void:
+	var json = current_ship.to_json()
+	var file = FileAccess.open(filepath, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(json, "  "))
+		file.close()
+		print("Ship saved to: ", filepath)
+
+func load_ship(filepath: String) -> bool:
+	if !FileAccess.file_exists(filepath):
+		return false
+
+	var file = FileAccess.open(filepath, FileAccess.READ)
+	if !file:
+		return false
+
+	var json_string = file.get_as_text()
+	file.close()
+
+	var json = JSON.parse_string(json_string)
+	if json == null:
+		return false
+
+	# TODO: Implement from_json() in ShipDefinition
+	print("Ship loaded from: ", filepath)
+	return true
+
+func clear_ship() -> void:
+	current_ship = ShipDefinition.new()
+	current_ship.ship_name = "New Ship"
+	if grid_editor:
+		grid_editor.ship_definition = current_ship
+		grid_editor.refresh()
+	update_stats()
+
+# Toolbar button handlers
+func _on_save_pressed() -> void:
+	# For now, save to a default location
+	save_ship("user://test_ship.ship")
+
+func _on_load_pressed() -> void:
+	# For now, load from default location
+	if load_ship("user://test_ship.ship"):
+		if grid_editor:
+			grid_editor.refresh()
+		update_stats()
+
+func _on_clear_pressed() -> void:
+	clear_ship()
+
+func _on_orientation_toggled(pressed: bool) -> void:
+	part_orientation_horizontal = !pressed
+	toggle_orientation()
+
+	# Update button text
+	if orientation_button:
+		if pressed:
+			orientation_button.text = "Orientation: Vertical"
+		else:
+			orientation_button.text = "Orientation: Horizontal"
+
+func _on_erase_toggled(pressed: bool) -> void:
+	if pressed:
+		selected_tool = "erase"
+		if grid_editor:
+			grid_editor.set_tool("erase", null)
+	else:
+		# Return to previous tool
+		if selected_tile:
+			_on_tile_selected(selected_tile)
+		elif selected_part:
+			_on_part_selected(selected_part)

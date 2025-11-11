@@ -1,0 +1,128 @@
+[gd_scene load_steps=7 format=3 uid="uid://cq7h3m8vxbqr6"]
+
+[ext_resource type="Script" path="res://scripts/ship_designer/ShipDesigner.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ship_designer/GridEditor.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/ship_designer/TilePalette.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/ship_designer/PartPalette.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/ship_designer/StatsPanel.gd" id="5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.1, 0.12, 1)
+
+[node name="ShipDesigner" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.15, 0.15, 0.17, 1)
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopPanel" type="PanelContainer" parent="MainLayout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Toolbar" type="HBoxContainer" parent="MainLayout/TopPanel"]
+layout_mode = 2
+
+[node name="ShipNameLabel" type="Label" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Ship: New Ship"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="Separator1" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+
+[node name="SaveButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Save"
+
+[node name="LoadButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Load"
+
+[node name="ClearButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Clear"
+
+[node name="Separator2" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+
+[node name="OrientationButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Orientation: Horizontal"
+toggle_mode = true
+
+[node name="EraseButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
+layout_mode = 2
+text = "Erase Mode"
+toggle_mode = true
+
+[node name="ContentArea" type="HSplitContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/LeftPanel"]
+layout_mode = 2
+
+[node name="TilePalette" type="VBoxContainer" parent="MainLayout/ContentArea/LeftPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3")
+
+[node name="CenterContainer" type="PanelContainer" parent="MainLayout/ContentArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="GridEditorScroll" type="ScrollContainer" parent="MainLayout/ContentArea/CenterContainer"]
+layout_mode = 2
+
+[node name="GridEditor" type="Node2D" parent="MainLayout/ContentArea/CenterContainer/GridEditorScroll"]
+script = ExtResource("2")
+
+[node name="RightPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/RightPanel"]
+layout_mode = 2
+
+[node name="PartPalette" type="VBoxContainer" parent="MainLayout/ContentArea/RightPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("4")
+
+[node name="BottomPanel" type="PanelContainer" parent="MainLayout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="StatsPanel" type="HBoxContainer" parent="MainLayout/BottomPanel"]
+layout_mode = 2
+script = ExtResource("5")
