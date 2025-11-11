@@ -15,6 +15,8 @@ var current_tool: String = "tile"  # "tile", "part", "erase"
 var current_tile: ShipTile = null
 var current_part: ShipPart = null
 var current_orientation: bool = true  # true = horizontal
+var is_painting: bool = false  # Track if mouse button is held down
+var last_painted_cell: Vector2i = Vector2i(-1, -1)  # Prevent painting same cell multiple times
 
 # Visual elements
 var renderer: ShipRenderer
@@ -111,9 +113,18 @@ func draw_grid() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		update_hover(event.position)
+		# Continuous painting while mouse button is held
+		if is_painting and current_tool == "tile" and current_tile:
+			paint_at_hover()
 	elif event is InputEventMouseButton:
-		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			handle_click(event.position)
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				is_painting = true
+				last_painted_cell = Vector2i(-1, -1)
+				handle_click(event.position)
+			else:
+				is_painting = false
+				last_painted_cell = Vector2i(-1, -1)
 
 func update_hover(mouse_pos: Vector2) -> void:
 	# Convert mouse position to grid coordinates
@@ -195,11 +206,24 @@ func can_place_current_part() -> bool:
 
 	return ship_definition.can_place_part(placement)
 
+func paint_at_hover() -> void:
+	"""Continuously paint tiles while dragging mouse"""
+	if hover_position.x < 0 or hover_position.y < 0:
+		return
+
+	# Only paint if we've moved to a new cell
+	if hover_position == last_painted_cell:
+		return
+
+	last_painted_cell = hover_position
+	place_tile(hover_position, current_tile)
+
 func handle_click(_mouse_pos: Vector2) -> void:
 	if hover_position.x < 0 or hover_position.y < 0:
 		return
 
 	if current_tool == "tile" and current_tile:
+		last_painted_cell = hover_position
 		place_tile(hover_position, current_tile)
 
 	elif current_tool == "part" and current_part:

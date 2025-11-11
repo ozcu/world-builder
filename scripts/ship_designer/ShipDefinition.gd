@@ -69,21 +69,39 @@ func can_place_part(placement: PartPlacement) -> bool:
 				return false
 
 	# Check door connections (if part has doors)
+	# For now, allow free placement to make building easier
+	# TODO: Add toggle for strict door validation mode
 	if placement.part.has_doors():
-		var door_positions = placement.get_actual_door_positions()
-		var door_directions = placement.get_actual_door_directions()
+		# Only enforce door connections if the ship already has corridors
+		var has_any_corridors = false
+		for pos in tile_positions:
+			var tile = get_tile(pos)
+			if tile and tile.tile_type == PartCategory.TileType.CORRIDOR:
+				has_any_corridors = true
+				break
 
-		for i in door_positions.size():
-			var door_pos = door_positions[i]
-			var door_dir = door_directions[i]
-			var corridor_cell = door_pos + door_dir
+		# If ship has corridors, at least ONE door must connect to a corridor
+		# This allows placing parts freely, but encourages corridor connections
+		if has_any_corridors:
+			var door_positions = placement.get_actual_door_positions()
+			var door_directions = placement.get_actual_door_directions()
+			var has_valid_connection = false
 
-			# Must connect to a corridor tile
-			var tile = get_tile(corridor_cell)
-			if tile == null:
-				return false
-			if tile.tile_type != PartCategory.TileType.CORRIDOR:
-				return false
+			for i in door_positions.size():
+				var door_pos = door_positions[i]
+				var door_dir = door_directions[i]
+				var corridor_cell = door_pos + door_dir
+
+				var tile = get_tile(corridor_cell)
+				if tile and tile.tile_type == PartCategory.TileType.CORRIDOR:
+					has_valid_connection = true
+					break
+
+			# Relaxed validation: Allow placement anyway (for easier building)
+			# User can still place parts without connections
+			# Just print a warning
+			if !has_valid_connection:
+				print("Warning: Part placed without corridor connection")
 
 	return true
 
