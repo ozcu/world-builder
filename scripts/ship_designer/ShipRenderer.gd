@@ -55,32 +55,40 @@ func render_ship() -> void:
 		if !placement.enabled or placement.part == null:
 			continue
 
-		var sprite = Sprite2D.new()
-		sprite.texture = placement.part.sprite
-		sprite.position = offset + Vector2(
+		var base_position = offset + Vector2(
 			placement.grid_position.x * cell_size,
 			placement.grid_position.y * cell_size
 		)
+
+		print("  Rendering part '", placement.part.part_name, "' at grid ", placement.grid_position,
+		      " rotation ", placement.rotation, "°, base pixel pos ", base_position)
+
+		var sprite = Sprite2D.new()
+		sprite.texture = placement.part.sprite
+		sprite.position = base_position
 		sprite.centered = false
 
 		# Apply rotation (0, 90, 180, 270)
-		# Use rotation property, with fallback to horizontal for legacy compatibility
 		var rotation_angle = placement.rotation
 		sprite.rotation = deg_to_rad(rotation_angle)
 
 		# Adjust position based on rotation to maintain correct grid alignment
 		# Rotation happens around top-left corner (0,0) since centered = false
 		var size = placement.part.size
+		var rotation_offset = Vector2.ZERO
 		match rotation_angle:
 			90:
 				# Rotated 90° clockwise: need to shift by width
-				sprite.position += Vector2(0, size.x * cell_size)
+				rotation_offset = Vector2(0, size.x * cell_size)
 			180:
 				# Rotated 180°: need to shift by width and height
-				sprite.position += Vector2(size.x * cell_size, size.y * cell_size)
+				rotation_offset = Vector2(size.x * cell_size, size.y * cell_size)
 			270:
 				# Rotated 270° clockwise (90° counter-clockwise): need to shift by height
-				sprite.position += Vector2(size.y * cell_size, 0)
+				rotation_offset = Vector2(size.y * cell_size, 0)
+
+		sprite.position += rotation_offset
+		print("    Part size ", size, ", rotation offset ", rotation_offset, ", final pos ", sprite.position)
 
 		add_child(sprite)
 		part_sprites[placement] = sprite

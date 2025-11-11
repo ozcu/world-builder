@@ -209,8 +209,24 @@ func update_preview() -> void:
 		else:
 			hover_preview.modulate = Color(1, 0, 0, 0.5)  # Red transparent = invalid
 
-		# Apply rotation - keep position under cursor for all rotations
+		# Apply rotation and position offset to keep preview at same grid cell
 		hover_preview.rotation = deg_to_rad(current_rotation)
+
+		# Apply same position offset as renderer to keep sprite at grid cell
+		var size = current_part.size
+		var rotation_offset = Vector2.ZERO
+		match current_rotation:
+			90:
+				# Rotated 90° clockwise: shift down by width
+				rotation_offset = Vector2(0, size.x * cell_size)
+			180:
+				# Rotated 180°: shift by width and height
+				rotation_offset = Vector2(size.x * cell_size, size.y * cell_size)
+			270:
+				# Rotated 270°: shift right by height
+				rotation_offset = Vector2(size.y * cell_size, 0)
+
+		hover_preview.position = Vector2(hover_position.x * cell_size, hover_position.y * cell_size) + rotation_offset
 
 	elif current_tool == "erase":
 		hover_preview.visible = false
@@ -308,12 +324,17 @@ func place_part(pos: Vector2i, part: ShipPart) -> void:
 	placement.grid_position = pos
 	placement.rotation = current_rotation
 
+	# Debug: show which cells this part will occupy
+	var occupied = placement.get_occupied_cells()
+	print("GridEditor: Attempting to place ", part.part_name, " at ", pos, " with rotation ", current_rotation, "°")
+	print("  Will occupy cells: ", occupied)
+
 	if ship_definition.add_part(placement):
-		print("GridEditor: Placed ", part.part_name, " at ", pos, " with rotation ", current_rotation, "°")
+		print("  SUCCESS: Placed ", part.part_name)
 		refresh()
 		ship_modified.emit()
 	else:
-		print("Cannot place part - space already occupied by another part")
+		print("  FAILED: Cannot place part - space already occupied by another part")
 
 func erase_at(pos: Vector2i) -> void:
 	# Check if tile exists at position

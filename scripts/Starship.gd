@@ -182,7 +182,15 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	print("  Ship renderer cell_size: ", ship_renderer.cell_size)
 
 	# Debug: print first few tile positions
-	for i in min(5, design.tile_positions.size()):
+	for i in min(3, design.tile_positions.size()):
 		var pos = design.tile_positions[i]
 		var pixel_pos = Vector2(pos.x * ship_renderer.cell_size, pos.y * ship_renderer.cell_size)
 		print("  Tile ", i, " at grid ", pos, " -> pixel ", pixel_pos)
+
+	# Debug: print all part placements
+	print("  Part placements:")
+	for i in design.parts.size():
+		var placement = design.parts[i]
+		var cells = placement.get_occupied_cells()
+		print("    Part ", i, ": ", placement.part.part_name, " at ", placement.grid_position,
+		      " rotation ", placement.rotation, "° occupies ", cells.size(), " cells: ", cells)
