@@ -55,18 +55,6 @@ func _ready() -> void:
 	hover_preview.visible = false
 	add_child(hover_preview)
 
-	# Add a visual debug marker at origin (using Sprite2D with generated texture)
-	var debug_image = Image.create(64, 64, false, Image.FORMAT_RGBA8)
-	debug_image.fill(Color.RED)
-	var debug_texture = ImageTexture.create_from_image(debug_image)
-	var debug_marker = Sprite2D.new()
-	debug_marker.texture = debug_texture
-	debug_marker.centered = false
-	debug_marker.position = Vector2(0, 0)
-	debug_marker.z_index = 100  # On top of everything
-	add_child(debug_marker)
-	print("GridEditor: Added red debug marker at (0,0) - 64x64")
-
 	print("GridEditor: Ready complete, background and renderer added")
 	print("GridEditor children count: ", get_child_count())
 	print("GridEditor - Position: ", position, ", Global position: ", global_position)
@@ -161,6 +149,12 @@ func _input(event: InputEvent) -> void:
 				else:
 					is_painting = false
 					last_painted_cell = Vector2i(-1, -1)
+		# Handle right-click to toggle orientation
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			if event.pressed:
+				current_orientation = !current_orientation
+				update_preview()
+				print("GridEditor: Orientation toggled to ", "Horizontal" if current_orientation else "Vertical")
 		# Handle scroll wheel zoom (without needing middle mouse button)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			zoom_in()
@@ -216,12 +210,13 @@ func update_preview() -> void:
 		else:
 			hover_preview.modulate = Color(1, 0, 0, 0.5)  # Red transparent = invalid
 
-		# Handle rotation
+		# Handle rotation - keep position under cursor for both orientations
 		if !current_orientation:
+			# Vertical: rotate 90° and keep under cursor
 			hover_preview.rotation = deg_to_rad(90)
-			var size = current_part.size
-			hover_preview.position += Vector2(0, size.x * cell_size)
+			# No position adjustment needed - rotation happens at same grid position
 		else:
+			# Horizontal: no rotation
 			hover_preview.rotation = 0
 
 	elif current_tool == "erase":

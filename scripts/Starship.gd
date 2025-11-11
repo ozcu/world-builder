@@ -143,6 +143,14 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	if original_sprite:
 		original_sprite.visible = false
 
+	# Hide thruster sprites - design replaces them
+	if thruster_left:
+		thruster_left.visible = false
+	if thruster_center:
+		thruster_center.visible = false
+	if thruster_right:
+		thruster_right.visible = false
+
 	# Remove old renderer if exists
 	if ship_renderer:
 		ship_renderer.queue_free()
@@ -151,11 +159,19 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	ship_renderer = ShipRenderer.new()
 	ship_renderer.ship_definition = design
 	ship_renderer.cell_size = 2  # Much smaller than designer (32 -> 2)
-	ship_renderer.auto_center = true
-	ship_renderer.position = Vector2.ZERO  # Center on Starship origin
-	ship_renderer.z_index = -1  # Behind thruster sprites
+	ship_renderer.auto_center = false  # We'll center manually
+	ship_renderer.z_index = -1  # Behind everything
+
+	# Calculate center offset manually
+	var bounds = design.get_bounds()
+	var ship_pixel_size = Vector2(bounds.size.x * 2, bounds.size.y * 2)  # cell_size = 2
+	var center_offset = -ship_pixel_size / 2.0 - Vector2(bounds.position.x * 2, bounds.position.y * 2)
+	ship_renderer.position = center_offset
+
 	add_child(ship_renderer)
 
 	print("Starship: Applied ship design '", design.ship_name, "'")
 	print("  Tiles: ", design.tile_positions.size())
 	print("  Parts: ", design.parts.size())
+	print("  Bounds: ", bounds)
+	print("  Center offset: ", center_offset)

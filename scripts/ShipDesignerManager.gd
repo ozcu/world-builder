@@ -64,9 +64,9 @@ func open_designer() -> void:
 	ship_designer_instance.grow_horizontal = Control.GROW_DIRECTION_END
 	ship_designer_instance.grow_vertical = Control.GROW_DIRECTION_END
 
-	# Make it 1/4 of screen width AND 1/4 of screen height (1/16 total area)
+	# Make it 1/2 width × 1/2 height (1/4 total area)
 	var viewport_size = get_viewport().get_visible_rect().size
-	var designer_size = Vector2(viewport_size.x * 0.25, viewport_size.y * 0.25)  # 1/4 width, 1/4 height
+	var designer_size = Vector2(viewport_size.x * 0.5, viewport_size.y * 0.5)  # 1/2 width, 1/2 height
 
 	# Position in BOTTOM-LEFT corner
 	ship_designer_instance.position = Vector2(0, viewport_size.y - designer_size.y)
