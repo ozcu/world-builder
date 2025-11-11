@@ -46,6 +46,7 @@ func create_background() -> void:
 	# Load star background texture
 	var star_texture = load("res://assets/textures/star-background.jpg")
 	if star_texture:
+		print("GridEditor: Star background loaded successfully")
 		background_sprite = Sprite2D.new()
 		background_sprite.texture = star_texture
 		background_sprite.centered = false
@@ -59,6 +60,8 @@ func create_background() -> void:
 		var scale_x = grid_pixel_size.x / texture_size.x
 		var scale_y = grid_pixel_size.y / texture_size.y
 
+		print("GridEditor: Grid size = ", grid_pixel_size, ", Texture size = ", texture_size)
+
 		# Use region to tile the texture
 		background_sprite.region_enabled = true
 		background_sprite.region_rect = Rect2(0, 0, texture_size.x * ceil(scale_x), texture_size.y * ceil(scale_y))
@@ -66,8 +69,9 @@ func create_background() -> void:
 
 		add_child(background_sprite)
 		move_child(background_sprite, 0)  # Ensure it's the first child (bottom layer)
+		print("GridEditor: Background sprite added as child")
 	else:
-		print("Warning: Could not load star-background.jpg")
+		print("ERROR: Could not load star-background.jpg from res://assets/textures/")
 
 func _draw() -> void:
 	if show_grid:
@@ -185,10 +189,13 @@ func handle_click(mouse_pos: Vector2) -> void:
 
 func place_tile(pos: Vector2i, tile: ShipTile) -> void:
 	ship_definition.set_tile(pos, tile)
+	print("GridEditor: Placed ", tile.tile_name, " at ", pos)
 
 	# Auto-tile corridors
 	if tile.tile_type == PartCategory.TileType.CORRIDOR:
-		AutoTiler.update_corridor_and_neighbors(ship_definition, pos)
+		print("GridEditor: Auto-tiling corridor at ", pos)
+		var updated_positions = AutoTiler.update_corridor_and_neighbors(ship_definition, pos)
+		print("GridEditor: Updated ", updated_positions.size(), " corridor tiles")
 
 	refresh()
 	ship_modified.emit()

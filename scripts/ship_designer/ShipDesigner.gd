@@ -39,14 +39,27 @@ func setup_ui() -> void:
 	var tiles = TestDataGenerator.create_test_tiles()
 	var parts = TestDataGenerator.create_test_parts()
 
+	print("=== Ship Designer Initialized ===")
+	print("Tiles loaded: ", tiles.keys())
+	print("Parts loaded: ", parts.keys())
+
 	if tile_palette:
 		tile_palette.set_tiles(tiles)
+		print("Tile palette set with ", tiles.size(), " tiles")
+	else:
+		print("WARNING: tile_palette is null!")
 
 	if part_palette:
 		part_palette.set_parts(parts)
+		print("Part palette set with ", parts.size(), " parts")
+	else:
+		print("WARNING: part_palette is null!")
 
 	if grid_editor:
 		grid_editor.ship_definition = current_ship
+		print("Grid editor initialized")
+	else:
+		print("WARNING: grid_editor is null!")
 
 	update_stats()
 
