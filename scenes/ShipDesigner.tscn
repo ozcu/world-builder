@@ -103,7 +103,11 @@ custom_minimum_size = Vector2(160, 300)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="TilePalette" type="VBoxContainer" parent="MainLayout/ContentArea/LeftPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/LeftPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TilePalette" type="VBoxContainer" parent="MainLayout/ContentArea/LeftPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -137,7 +141,11 @@ custom_minimum_size = Vector2(160, 300)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="PartPalette" type="VBoxContainer" parent="MainLayout/ContentArea/RightSplit/RightPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/RightSplit/RightPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PartPalette" type="VBoxContainer" parent="MainLayout/ContentArea/RightSplit/RightPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

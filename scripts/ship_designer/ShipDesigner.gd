@@ -4,8 +4,8 @@ extends Control
 
 # UI References
 @onready var grid_editor: Node2D = $MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorControl/GridEditor
-@onready var tile_palette: Control = $MainLayout/ContentArea/LeftPanel/TilePalette
-@onready var part_palette: Control = $MainLayout/ContentArea/RightSplit/RightPanel/PartPalette
+@onready var tile_palette: Control = $MainLayout/ContentArea/LeftPanel/ScrollContainer/TilePalette
+@onready var part_palette: Control = $MainLayout/ContentArea/RightSplit/RightPanel/ScrollContainer/PartPalette
 @onready var stats_panel: Control = $MainLayout/BottomPanel/StatsPanel
 @onready var toolbar: Control = $MainLayout/TopPanel/Toolbar
 @onready var save_button: Button = $MainLayout/TopPanel/Toolbar/SaveButton

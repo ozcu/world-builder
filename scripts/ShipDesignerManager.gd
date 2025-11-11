@@ -46,6 +46,10 @@ func open_designer() -> void:
 
 	# Create designer instance
 	ship_designer_instance = ship_designer_scene.instantiate()
+
+	# CRITICAL: Set process mode to always so it works when game is paused
+	ship_designer_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+
 	add_child(ship_designer_instance)
 
 	# CRITICAL: Reset ALL anchors to prevent auto-scaling
@@ -60,12 +64,12 @@ func open_designer() -> void:
 	ship_designer_instance.grow_horizontal = Control.GROW_DIRECTION_END
 	ship_designer_instance.grow_vertical = Control.GROW_DIRECTION_END
 
-	# Make it 1/4 of screen size
+	# Make it 1/4 of screen width, full height
 	var viewport_size = get_viewport().get_visible_rect().size
-	var designer_size = Vector2(viewport_size.x * 0.5, viewport_size.y * 0.5)  # Half width, half height = 1/4 area
+	var designer_size = Vector2(viewport_size.x * 0.25, viewport_size.y)  # 1/4 width, full height
 
-	# Position in bottom-right corner
-	ship_designer_instance.position = Vector2(viewport_size.x - designer_size.x, viewport_size.y - designer_size.y)
+	# Position on LEFT side of screen
+	ship_designer_instance.position = Vector2(0, 0)
 	ship_designer_instance.size = designer_size
 
 	# Make background semi-transparent and fix anchors
