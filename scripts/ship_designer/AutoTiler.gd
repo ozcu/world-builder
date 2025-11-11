@@ -39,6 +39,13 @@ static func get_corridor_sprite(ship: ShipDefinition, pos: Vector2i) -> Texture2
 
 	return corridor_sprites.get(sprite_key, corridor_sprites["isolated"])
 
+# Get sprite directly from connection mask (for preview)
+static func get_sprite_from_connections(connections: int) -> Texture2D:
+	initialize_sprites()
+
+	var sprite_key = get_sprite_key_from_connections(connections)
+	return corridor_sprites.get(sprite_key, corridor_sprites["isolated"])
+
 # Get connection mask for a corridor at given position
 static func get_connections(ship: ShipDefinition, pos: Vector2i) -> int:
 	var mask = 0

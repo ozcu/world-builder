@@ -44,7 +44,7 @@ func _ready() -> void:
 
 func create_background() -> void:
 	# Load star background texture
-	var star_texture = load("res://star-background.jpg")
+	var star_texture = load("res://assets/textures/star-background.jpg")
 	if star_texture:
 		background_sprite = Sprite2D.new()
 		background_sprite.texture = star_texture
@@ -55,16 +55,19 @@ func create_background() -> void:
 		var grid_pixel_size = Vector2(grid_size.x * cell_size, grid_size.y * cell_size)
 		var texture_size = star_texture.get_size()
 
-		# Calculate how many tiles we need
-		var tiles_x = ceil(grid_pixel_size.x / texture_size.x)
-		var tiles_y = ceil(grid_pixel_size.y / texture_size.y)
+		# Scale to fit - make it repeat by using region
+		var scale_x = grid_pixel_size.x / texture_size.x
+		var scale_y = grid_pixel_size.y / texture_size.y
 
-		# Scale to fit if needed, or repeat
+		# Use region to tile the texture
 		background_sprite.region_enabled = true
-		background_sprite.region_rect = Rect2(0, 0, grid_pixel_size.x, grid_pixel_size.y)
+		background_sprite.region_rect = Rect2(0, 0, texture_size.x * ceil(scale_x), texture_size.y * ceil(scale_y))
 		background_sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 
 		add_child(background_sprite)
+		move_child(background_sprite, 0)  # Ensure it's the first child (bottom layer)
+	else:
+		print("Warning: Could not load star-background.jpg")
 
 func _draw() -> void:
 	if show_grid:
@@ -114,7 +117,14 @@ func update_preview() -> void:
 	hover_preview.position = Vector2(hover_position.x * cell_size, hover_position.y * cell_size)
 
 	if current_tool == "tile" and current_tile:
-		hover_preview.texture = current_tile.sprite
+		# For corridors, show auto-tiled preview
+		if current_tile.tile_type == PartCategory.TileType.CORRIDOR:
+			# Create a temporary ship definition to calculate what the corridor would look like
+			var preview_sprite = get_corridor_preview_sprite(hover_position)
+			hover_preview.texture = preview_sprite
+		else:
+			hover_preview.texture = current_tile.sprite
+
 		hover_preview.visible = true
 		hover_preview.rotation = 0
 		hover_preview.modulate = Color(1, 1, 1, 0.6)
@@ -142,6 +152,12 @@ func update_preview() -> void:
 
 	else:
 		hover_preview.visible = false
+
+func get_corridor_preview_sprite(pos: Vector2i) -> Texture2D:
+	# Simulate what the corridor would look like if placed here
+	# Check what's currently at this position and neighboring cells
+	var connections = AutoTiler.get_connections(ship_definition, pos)
+	return AutoTiler.get_sprite_from_connections(connections)
 
 func can_place_current_part() -> bool:
 	if !current_part:

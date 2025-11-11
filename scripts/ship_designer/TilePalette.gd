@@ -78,15 +78,22 @@ func add_category_label(text: String) -> void:
 func add_tile_button(tile_id: String, tile: ShipTile) -> void:
 	var button = Button.new()
 	button.text = tile.tile_name
-	button.custom_minimum_size = Vector2(150, 40)
+	button.custom_minimum_size = Vector2(150, 50)
+	button.clip_text = false
 
-	# Add icon if sprite exists
+	# Set icon - for corridor, use a cross sprite to show it auto-tiles
 	if tile.sprite:
-		var icon = TextureRect.new()
-		icon.texture = tile.sprite
-		icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-		icon.custom_minimum_size = Vector2(32, 32)
-		button.add_child(icon)
+		if tile.tile_type == PartCategory.TileType.CORRIDOR:
+			# Show cross corridor as icon to indicate auto-tiling
+			var icon_sprite = MockupGenerator.create_corridor_mockup([
+				Vector2i(0, -1), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(1, 0)
+			])
+			button.icon = icon_sprite
+		else:
+			button.icon = tile.sprite
+
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button.expand_icon = false
 
 	button.pressed.connect(_on_tile_button_pressed.bind(tile, button))
 	add_child(button)

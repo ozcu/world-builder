@@ -71,15 +71,14 @@ func add_category_label(text: String) -> void:
 func add_part_button(part_id: String, part: ShipPart) -> void:
 	var button = Button.new()
 	button.text = part.part_name
-	button.custom_minimum_size = Vector2(150, 40)
+	button.custom_minimum_size = Vector2(150, 50)
+	button.clip_text = false
 
-	# Add icon if sprite exists
+	# Set icon if sprite exists
 	if part.sprite:
-		var icon = TextureRect.new()
-		icon.texture = part.sprite
-		icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-		icon.custom_minimum_size = Vector2(32, 32)
-		button.add_child(icon)
+		button.icon = part.sprite
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button.expand_icon = false
 
 	button.pressed.connect(_on_part_button_pressed.bind(part, button))
 	add_child(button)
