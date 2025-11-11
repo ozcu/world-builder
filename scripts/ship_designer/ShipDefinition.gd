@@ -33,12 +33,16 @@ func get_tile(pos: Vector2i) -> ShipTile:
 
 # Set tile at position
 func set_tile(pos: Vector2i, tile: ShipTile) -> void:
+	# IMPORTANT: Duplicate the tile so each position has its own independent copy
+	# This prevents sprite changes from affecting all tiles of the same type
+	var tile_copy = tile.duplicate()
+
 	var index = tile_positions.find(pos)
 	if index >= 0:
-		tile_data[index] = tile
+		tile_data[index] = tile_copy
 	else:
 		tile_positions.append(pos)
-		tile_data.append(tile)
+		tile_data.append(tile_copy)
 
 # Remove tile at position
 func remove_tile(pos: Vector2i) -> void:
