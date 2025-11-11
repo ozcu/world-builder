@@ -4,7 +4,17 @@ extends Node
 
 func _ready() -> void:
 	# Example: Create a simple ship programmatically
-	create_example_ship()
+	var ship = create_example_ship()
+
+	# Add a camera
+	var camera = Camera2D.new()
+	camera.position = Vector2(640, 360)  # Center of screen
+	add_child(camera)
+
+	# Render the ship visually
+	var renderer = ShipRenderer.new()
+	renderer.ship_definition = ship
+	add_child(renderer)
 
 func create_example_ship() -> ShipDefinition:
 	print("=== Creating Example Ship ===")
