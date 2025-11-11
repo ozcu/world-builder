@@ -9,6 +9,9 @@ var tile_buttons: Array = []
 var selected_button: Button = null
 
 func _ready() -> void:
+	# Ensure palette expands to fill available space
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
+
 	# Add label
 	var label = Label.new()
 	label.text = "TILES"
@@ -76,28 +79,41 @@ func add_category_label(text: String) -> void:
 	add_child(label)
 
 func add_tile_button(tile_id: String, tile: ShipTile) -> void:
-	var button = Button.new()
-	button.text = tile.tile_name
-	button.custom_minimum_size = Vector2(150, 50)
-	button.clip_text = false
+	# Create HBoxContainer for icon + text layout
+	var container = HBoxContainer.new()
+	container.custom_minimum_size = Vector2(150, 60)
+
+	# Create icon display
+	var icon_rect = TextureRect.new()
+	icon_rect.custom_minimum_size = Vector2(48, 48)
+	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 
 	# Set icon - for corridor, use a cross sprite to show it auto-tiles
 	if tile.sprite:
 		if tile.tile_type == PartCategory.TileType.CORRIDOR:
 			# Show cross corridor as icon to indicate auto-tiling
-			var icon_sprite = MockupGenerator.create_corridor_mockup([
+			icon_rect.texture = MockupGenerator.create_corridor_mockup([
 				Vector2i(0, -1), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(1, 0)
 			])
-			button.icon = icon_sprite
 		else:
-			button.icon = tile.sprite
+			icon_rect.texture = tile.sprite
 
-		button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.expand_icon = false
+	# Create button
+	var button = Button.new()
+	button.text = tile.tile_name
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+	# Add icon and button to container
+	container.add_child(icon_rect)
+	container.add_child(button)
 
 	button.pressed.connect(_on_tile_button_pressed.bind(tile, button))
-	add_child(button)
+	add_child(container)
 	tile_buttons.append(button)
+
+	print("TilePalette: Added tile button for ", tile.tile_name)
 
 func _on_tile_button_pressed(tile: ShipTile, button: Button) -> void:
 	# Highlight selected button
