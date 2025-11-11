@@ -158,15 +158,23 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	# Create new renderer
 	ship_renderer = ShipRenderer.new()
 	ship_renderer.ship_definition = design
-	ship_renderer.cell_size = 8  # Scale down from designer (32 -> 8) for reasonable ship size
-	ship_renderer.auto_center = false  # We'll center manually
+	ship_renderer.cell_size = 32  # Same scale as designer for clarity (1:1 scale)
+	ship_renderer.auto_center = false  # We'll center manually on Starship origin
 	ship_renderer.z_index = -1  # Behind everything
 
-	# Calculate center offset manually to center the ship on the Starship's origin
+	# Calculate the center of the ship design in grid coordinates
 	var bounds = design.get_bounds()
-	var ship_pixel_size = Vector2(bounds.size.x * 8, bounds.size.y * 8)  # cell_size = 8
-	var center_offset = -ship_pixel_size / 2.0 - Vector2(bounds.position.x * 8, bounds.position.y * 8)
-	ship_renderer.position = center_offset
+	var design_center_grid = Vector2(
+		bounds.position.x + bounds.size.x / 2.0,
+		bounds.position.y + bounds.size.y / 2.0
+	)
+
+	# Convert to pixel coordinates
+	var design_center_pixels = design_center_grid * ship_renderer.cell_size
+
+	# Position renderer so design center is at Starship origin (0, 0)
+	# This ensures the ship rotates around its visual center
+	ship_renderer.position = -design_center_pixels
 
 	add_child(ship_renderer)
 
@@ -178,19 +186,25 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	print("  Tiles: ", design.tile_positions.size())
 	print("  Parts: ", design.parts.size())
 	print("  Bounds: ", bounds)
-	print("  Center offset: ", center_offset)
-	print("  Ship renderer cell_size: ", ship_renderer.cell_size)
+	print("  Design center (grid): ", design_center_grid)
+	print("  Design center (pixels): ", design_center_pixels)
+	print("  Renderer position offset: ", ship_renderer.position)
+	print("  Cell size: ", ship_renderer.cell_size)
 
-	# Debug: print first few tile positions
-	for i in min(3, design.tile_positions.size()):
-		var pos = design.tile_positions[i]
-		var pixel_pos = Vector2(pos.x * 8, pos.y * 8)  # cell_size = 8
-		print("  Tile ", i, " at grid ", pos, " -> pixel ", pixel_pos)
+	# Debug: Verify centering - a tile at design center should render near (0,0)
+	print("  Centering verification:")
+	if design.tile_positions.size() > 0:
+		var sample_pos = design.tile_positions[0]
+		var sample_pixel = sample_pos * ship_renderer.cell_size
+		var sample_final = ship_renderer.position + sample_pixel
+		print("    Sample tile at grid ", sample_pos, " -> local pixel ", sample_pixel, " -> world ", sample_final)
 
 	# Debug: print all part placements
 	print("  Part placements:")
 	for i in design.parts.size():
 		var placement = design.parts[i]
 		var cells = placement.get_occupied_cells()
-		print("    Part ", i, ": ", placement.part.part_name, " at ", placement.grid_position,
-		      " rotation ", placement.rotation, "° occupies ", cells.size(), " cells: ", cells)
+		var part_center_grid = Vector2(placement.grid_position) + Vector2(placement.part.size) / 2.0
+		var part_center_world = ship_renderer.position + part_center_grid * ship_renderer.cell_size
+		print("    Part ", i, ": ", placement.part.part_name, " at grid ", placement.grid_position,
+		      " rotation ", placement.rotation, "° -> world center ", part_center_world)
