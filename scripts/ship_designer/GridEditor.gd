@@ -113,12 +113,15 @@ func draw_grid() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		update_hover(event.position)
-		# Continuous painting while mouse button is held
-		if is_painting and current_tool == "tile" and current_tile:
+		# Continuous painting while mouse button is held - ONLY for corridors
+		if is_painting and current_tool == "tile" and current_tile and current_tile.tile_type == PartCategory.TileType.CORRIDOR:
 			paint_at_hover()
 		# Continuous painting for external parts (armor) while dragging
 		elif is_painting and current_tool == "part" and current_part and current_part.is_external:
 			paint_part_at_hover()
+		# Continuous erasing while mouse button is held
+		elif is_painting and current_tool == "erase":
+			erase_at_hover()
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
@@ -236,6 +239,18 @@ func paint_part_at_hover() -> void:
 
 	last_painted_cell = hover_position
 	place_part(hover_position, current_part)
+
+func erase_at_hover() -> void:
+	"""Continuously erase tiles/parts while dragging mouse"""
+	if hover_position.x < 0 or hover_position.y < 0:
+		return
+
+	# Only erase if we've moved to a new cell
+	if hover_position == last_painted_cell:
+		return
+
+	last_painted_cell = hover_position
+	erase_at(hover_position)
 
 func handle_click(_mouse_pos: Vector2) -> void:
 	if hover_position.x < 0 or hover_position.y < 0:
