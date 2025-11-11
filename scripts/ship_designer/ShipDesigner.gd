@@ -3,9 +3,9 @@
 extends Control
 
 # UI References
-@onready var grid_editor: Node2D = $MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorScroll/GridEditorControl/GridEditor
-@onready var tile_palette: Control = $MainLayout/ContentArea/LeftPanel/ScrollContainer/TilePalette
-@onready var part_palette: Control = $MainLayout/ContentArea/RightSplit/RightPanel/ScrollContainer/PartPalette
+@onready var grid_editor: Node2D = $MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorControl/GridEditor
+@onready var tile_palette: Control = $MainLayout/ContentArea/LeftPanel/TilePalette
+@onready var part_palette: Control = $MainLayout/ContentArea/RightSplit/RightPanel/PartPalette
 @onready var stats_panel: Control = $MainLayout/BottomPanel/StatsPanel
 @onready var toolbar: Control = $MainLayout/TopPanel/Toolbar
 @onready var save_button: Button = $MainLayout/TopPanel/Toolbar/SaveButton
@@ -51,7 +51,7 @@ func setup_ui() -> void:
 
 	# Debug UI hierarchy
 	print("\n=== UI Hierarchy Debug ===")
-	var grid_editor_control = $MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorScroll/GridEditorControl
+	var grid_editor_control = $MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorControl
 	if grid_editor_control:
 		print("GridEditorControl - Size: ", grid_editor_control.size, ", MinSize: ", grid_editor_control.custom_minimum_size, ", Visible: ", grid_editor_control.visible)
 	var left_panel = $MainLayout/ContentArea/LeftPanel

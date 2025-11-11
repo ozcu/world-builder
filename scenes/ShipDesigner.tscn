@@ -97,11 +97,7 @@ custom_minimum_size = Vector2(160, 300)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/LeftPanel"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="TilePalette" type="VBoxContainer" parent="MainLayout/ContentArea/LeftPanel/ScrollContainer"]
+[node name="TilePalette" type="VBoxContainer" parent="MainLayout/ContentArea/LeftPanel"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -120,17 +116,13 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="GridEditorScroll" type="ScrollContainer" parent="MainLayout/ContentArea/RightSplit/CenterContainer"]
+[node name="GridEditorControl" type="Control" parent="MainLayout/ContentArea/RightSplit/CenterContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
-horizontal_scroll_mode = 2
-vertical_scroll_mode = 2
+clip_contents = true
 
-[node name="GridEditorControl" type="Control" parent="MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorScroll"]
-layout_mode = 2
-custom_minimum_size = Vector2(2048, 2048)
-
-[node name="GridEditor" type="Node2D" parent="MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorScroll/GridEditorControl"]
+[node name="GridEditor" type="Node2D" parent="MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorControl"]
 script = ExtResource("2")
 
 [node name="RightPanel" type="PanelContainer" parent="MainLayout/ContentArea/RightSplit"]
@@ -139,11 +131,7 @@ custom_minimum_size = Vector2(160, 300)
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentArea/RightSplit/RightPanel"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="PartPalette" type="VBoxContainer" parent="MainLayout/ContentArea/RightSplit/RightPanel/ScrollContainer"]
+[node name="PartPalette" type="VBoxContainer" parent="MainLayout/ContentArea/RightSplit/RightPanel"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

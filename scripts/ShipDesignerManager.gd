@@ -41,11 +41,18 @@ func open_designer() -> void:
 	if ship_designer_instance:
 		return  # Already open
 
+	# Pause the game
+	get_tree().paused = true
+
 	# Create designer instance
 	ship_designer_instance = ship_designer_scene.instantiate()
-	add_child(ship_designer_instance)
 
-	# Make it 1/4 of screen size (positioned in corner)
+	# Reset anchors to not fill screen
+	ship_designer_instance.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	ship_designer_instance.grow_horizontal = Control.GROW_DIRECTION_END
+	ship_designer_instance.grow_vertical = Control.GROW_DIRECTION_END
+
+	# Make it 1/4 of screen size
 	var viewport_size = get_viewport().get_visible_rect().size
 	var designer_size = Vector2(viewport_size.x * 0.5, viewport_size.y * 0.5)  # Half width, half height = 1/4 area
 
@@ -54,23 +61,22 @@ func open_designer() -> void:
 	ship_designer_instance.custom_minimum_size = designer_size
 	ship_designer_instance.size = designer_size
 
-	# Add semi-transparent background overlay
-	var overlay = ColorRect.new()
-	overlay.color = Color(0, 0, 0, 0.5)
-	overlay.size = viewport_size
-	overlay.z_index = -1
-	ship_designer_instance.add_child(overlay)
-	ship_designer_instance.move_child(overlay, 0)
+	# Make background semi-transparent
+	var bg = ship_designer_instance.get_node("Background")
+	if bg:
+		bg.color = Color(0.15, 0.15, 0.17, 0.85)  # Semi-transparent
+
+	add_child(ship_designer_instance)
 
 	is_open = true
-	print("ShipDesignerManager: Designer opened")
+	print("ShipDesignerManager: Designer opened at ", ship_designer_instance.position, " with size ", designer_size)
 
 func close_designer() -> void:
 	if !ship_designer_instance:
 		return
 
-	# Before closing, check if we should apply the design
-	# (This will be called when user clicks a "Close" or "Apply" button)
+	# Unpause the game
+	get_tree().paused = false
 
 	ship_designer_instance.queue_free()
 	ship_designer_instance = null
@@ -82,7 +88,7 @@ func apply_design_to_starship() -> void:
 		return
 
 	# Get the current ship definition from designer
-	var grid_editor = ship_designer_instance.get_node("MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorScroll/GridEditorControl/GridEditor")
+	var grid_editor = ship_designer_instance.get_node("MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorControl/GridEditor")
 	if !grid_editor:
 		print("ShipDesignerManager: Could not find GridEditor")
 		return

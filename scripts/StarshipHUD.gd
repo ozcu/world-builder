@@ -17,16 +17,16 @@ func _ready() -> void:
 
 func create_designer_button() -> void:
 	designer_button = Button.new()
-	designer_button.text = "Ship Designer"
-	designer_button.custom_minimum_size = Vector2(120, 30)
-	designer_button.add_theme_font_size_override("font_size", 11)
+	designer_button.text = "Designer"
+	designer_button.custom_minimum_size = Vector2(80, 25)
+	designer_button.add_theme_font_size_override("font_size", 10)
 
-	# Position in top-right corner
-	designer_button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	designer_button.offset_left = -130
-	designer_button.offset_top = 10
-	designer_button.offset_right = -10
-	designer_button.offset_bottom = 40
+	# Position in bottom-left corner
+	designer_button.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	designer_button.offset_left = 10
+	designer_button.offset_top = -35
+	designer_button.offset_right = 90
+	designer_button.offset_bottom = -10
 
 	designer_button.pressed.connect(_on_designer_button_pressed)
 	add_child(designer_button)

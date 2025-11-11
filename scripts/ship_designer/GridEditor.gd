@@ -24,6 +24,11 @@ var min_zoom: float = 0.5
 var max_zoom: float = 3.0
 var zoom_step: float = 0.1
 
+# Pan state
+var is_panning: bool = false
+var pan_start_pos: Vector2 = Vector2.ZERO
+var camera_offset: Vector2 = Vector2.ZERO
+
 # Visual elements
 var renderer: ShipRenderer
 var hover_preview: Sprite2D
@@ -117,30 +122,49 @@ func draw_grid() -> void:
 		draw_line(Vector2(0, y_pos), Vector2(grid_size.x * cell_size, y_pos), grid_color)
 
 func _input(event: InputEvent) -> void:
+	# Handle space key for pan mode
+	if event is InputEventKey:
+		if event.keycode == KEY_SPACE:
+			if event.pressed and not is_panning:
+				# Start pan mode
+				is_panning = true
+				Input.set_default_cursor_shape(Input.CURSOR_MOVE)
+			elif not event.pressed and is_panning:
+				# End pan mode
+				is_panning = false
+				Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+
 	if event is InputEventMouseMotion:
-		update_hover(event.position)
-		# Continuous painting while mouse button is held - ONLY for corridors
-		if is_painting and current_tool == "tile" and current_tile and current_tile.tile_type == PartCategory.TileType.CORRIDOR:
-			paint_at_hover()
-		# Continuous painting for external parts (armor) while dragging
-		elif is_painting and current_tool == "part" and current_part and current_part.is_external:
-			paint_part_at_hover()
-		# Continuous erasing while mouse button is held
-		elif is_painting and current_tool == "erase":
-			erase_at_hover()
+		if is_panning:
+			# Pan the view
+			var delta = event.relative
+			position += delta
+			camera_offset += delta
+		else:
+			update_hover(event.position)
+			# Continuous painting while mouse button is held - ONLY for corridors
+			if is_painting and current_tool == "tile" and current_tile and current_tile.tile_type == PartCategory.TileType.CORRIDOR:
+				paint_at_hover()
+			# Continuous painting for external parts (armor) while dragging
+			elif is_painting and current_tool == "part" and current_part and current_part.is_external:
+				paint_part_at_hover()
+			# Continuous erasing while mouse button is held
+			elif is_painting and current_tool == "erase":
+				erase_at_hover()
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				is_painting = true
-				last_painted_cell = Vector2i(-1, -1)
-				handle_click(event.position)
-			else:
-				is_painting = false
-				last_painted_cell = Vector2i(-1, -1)
-		# Handle middle mouse button zoom
-		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+			if not is_panning:  # Only paint when not panning
+				if event.pressed:
+					is_painting = true
+					last_painted_cell = Vector2i(-1, -1)
+					handle_click(event.position)
+				else:
+					is_painting = false
+					last_painted_cell = Vector2i(-1, -1)
+		# Handle scroll wheel zoom (without needing middle mouse button)
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			zoom_in()
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			zoom_out()
 
 func update_hover(mouse_pos: Vector2) -> void:
