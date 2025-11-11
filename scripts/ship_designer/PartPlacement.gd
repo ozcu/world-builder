@@ -9,8 +9,8 @@ class_name PartPlacement extends Resource
 func _init() -> void:
 	resource_local_to_scene = true
 
-func get_occupied_cells() -> Array[Vector2i]:
-	var cells: Array[Vector2i] = []
+func get_occupied_cells() -> Array:
+	var cells: Array = []
 	if part == null:
 		return cells
 
@@ -25,8 +25,8 @@ func get_occupied_cells() -> Array[Vector2i]:
 
 	return cells
 
-func get_actual_door_positions() -> Array[Vector2i]:
-	var doors: Array[Vector2i] = []
+func get_actual_door_positions() -> Array:
+	var doors: Array = []
 	if part == null or !part.has_doors():
 		return doors
 
@@ -39,8 +39,8 @@ func get_actual_door_positions() -> Array[Vector2i]:
 
 	return doors
 
-func get_actual_door_directions() -> Array[Vector2i]:
-	var directions: Array[Vector2i] = []
+func get_actual_door_directions() -> Array:
+	var directions: Array = []
 	if part == null or !part.has_doors():
 		return directions
 

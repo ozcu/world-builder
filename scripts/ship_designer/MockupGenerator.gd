@@ -18,7 +18,7 @@ static func create_mockup_texture(size: Vector2i, color: Color, border_color: Co
 	return ImageTexture.create_from_image(image)
 
 # Generate a corridor tile
-static func create_corridor_mockup(connections: Array[Vector2i]) -> ImageTexture:
+static func create_corridor_mockup(connections: Array) -> ImageTexture:
 	var size = Vector2i(32, 32)
 	var image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	var floor_color = Color(0.3, 0.3, 0.35)  # Dark gray
@@ -104,7 +104,7 @@ static func create_airlock_mockup() -> ImageTexture:
 	return ImageTexture.create_from_image(image)
 
 # Generate part mockup with door indicators
-static func create_part_mockup(size_cells: Vector2i, color: Color, door_positions: Array[Vector2i]) -> ImageTexture:
+static func create_part_mockup(size_cells: Vector2i, color: Color, door_positions: Array) -> ImageTexture:
 	var pixel_size = Vector2i(size_cells.x * 32, size_cells.y * 32)
 	var image = Image.create(pixel_size.x, pixel_size.y, false, Image.FORMAT_RGBA8)
 
