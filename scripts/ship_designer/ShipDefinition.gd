@@ -242,7 +242,8 @@ func to_json() -> Dictionary:
 		json.parts.append({
 			"part_id": placement.part.part_id,
 			"position": [placement.grid_position.x, placement.grid_position.y],
-			"horizontal": placement.horizontal,
+			"rotation": placement.rotation,
+			"horizontal": placement.horizontal,  # Keep for backward compatibility
 			"enabled": placement.enabled
 		})
 
@@ -295,7 +296,16 @@ static func from_json(json: Dictionary, tiles_library: Dictionary, parts_library
 
 			var pos_array = part_data.get("position", [0, 0])
 			placement.grid_position = Vector2i(pos_array[0], pos_array[1])
-			placement.horizontal = part_data.get("horizontal", true)
+
+			# Load rotation if available, otherwise convert from horizontal bool
+			if part_data.has("rotation"):
+				placement.rotation = part_data.get("rotation", 0)
+			else:
+				# Backward compatibility: convert horizontal bool to rotation
+				var horizontal = part_data.get("horizontal", true)
+				placement.rotation = 0 if horizontal else 90
+
+			placement.horizontal = part_data.get("horizontal", true)  # Keep for legacy code
 			placement.enabled = part_data.get("enabled", true)
 
 			ship.add_part(placement)

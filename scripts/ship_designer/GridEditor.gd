@@ -358,7 +358,7 @@ func set_tool(tool: String, item = null) -> void:
 
 	update_preview()
 
-func set_rotation(rotation_degrees: int) -> void:
+func set_part_rotation(rotation_degrees: int) -> void:
 	"""Set the current rotation angle for parts (0, 90, 180, 270)"""
 	current_rotation = rotation_degrees % 360
 	update_preview()

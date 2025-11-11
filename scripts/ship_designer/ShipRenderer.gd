@@ -64,7 +64,8 @@ func render_ship() -> void:
 		sprite.centered = false
 
 		# Apply rotation (0, 90, 180, 270)
-		var rotation_angle = placement.rotation if placement.has("rotation") else (0 if placement.horizontal else 90)
+		# Use rotation property, with fallback to horizontal for legacy compatibility
+		var rotation_angle = placement.rotation
 		sprite.rotation = deg_to_rad(rotation_angle)
 
 		# Adjust position based on rotation to maintain correct grid alignment
