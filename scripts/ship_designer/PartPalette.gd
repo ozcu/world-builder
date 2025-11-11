@@ -6,16 +6,14 @@ signal part_selected(part: ShipPart)
 
 var parts: Dictionary = {}
 var part_buttons: Array = []
-var selected_button: Button = null
+var selected_button: Control = null
 
 func _ready() -> void:
-	# Ensure palette expands to fill available space
-	size_flags_vertical = Control.SIZE_EXPAND_FILL
-
 	# Add label
 	var label = Label.new()
 	label.text = "PARTS"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 16)
 	add_child(label)
 
 	# Add separator
@@ -72,42 +70,72 @@ func add_category_label(text: String) -> void:
 	add_child(label)
 
 func add_part_button(part_id: String, part: ShipPart) -> void:
-	# Create HBoxContainer for icon + text layout
-	var container = HBoxContainer.new()
-	container.custom_minimum_size = Vector2(150, 60)
+	# Create a panel container for the entire button
+	var panel = PanelContainer.new()
+	panel.custom_minimum_size = Vector2(180, 70)
 
-	# Create icon display
-	var icon_rect = TextureRect.new()
-	icon_rect.custom_minimum_size = Vector2(48, 48)
-	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	# Create margin for padding
+	var margin = MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 5)
+	margin.add_theme_constant_override("margin_right", 5)
+	margin.add_theme_constant_override("margin_top", 5)
+	margin.add_theme_constant_override("margin_bottom", 5)
+	panel.add_child(margin)
 
-	# Set icon sprite
+	# Create horizontal container for icon + text
+	var hbox = HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 10)
+	margin.add_child(hbox)
+
+	# Create and add icon
+	var icon = TextureRect.new()
+	icon.custom_minimum_size = Vector2(56, 56)
+	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+
 	if part.sprite:
-		icon_rect.texture = part.sprite
+		icon.texture = part.sprite
+	hbox.add_child(icon)
 
-	# Create button
-	var button = Button.new()
-	button.text = part.part_name
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	# Create and add label
+	var text_label = Label.new()
+	text_label.text = part.part_name
+	text_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.add_child(text_label)
 
-	# Add icon and button to container
-	container.add_child(icon_rect)
-	container.add_child(button)
+	# Make panel clickable
+	panel.gui_input.connect(_on_panel_input.bind(part, panel))
+	panel.mouse_entered.connect(_on_panel_hover.bind(panel, true))
+	panel.mouse_exited.connect(_on_panel_hover.bind(panel, false))
 
-	button.pressed.connect(_on_part_button_pressed.bind(part, button))
-	add_child(container)
-	part_buttons.append(button)
+	add_child(panel)
+	part_buttons.append(panel)
 
-	print("PartPalette: Added part button for ", part.part_name)
+	print("PartPalette: Added part panel for ", part.part_name)
 
-func _on_part_button_pressed(part: ShipPart, button: Button) -> void:
-	# Highlight selected button
+func _on_panel_input(event: InputEvent, part: ShipPart, panel: Control) -> void:
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			_on_part_button_pressed(part, panel)
+
+func _on_panel_hover(panel: Control, entered: bool) -> void:
+	if selected_button == panel:
+		return
+
+	if entered:
+		panel.modulate = Color(1.2, 1.2, 1.2)
+	else:
+		panel.modulate = Color(1, 1, 1)
+
+func _on_part_button_pressed(part: ShipPart, panel: Control) -> void:
+	# Unhighlight previous
 	if selected_button:
 		selected_button.modulate = Color(1, 1, 1)
 
-	selected_button = button
-	button.modulate = Color(0.7, 1, 0.7)
+	# Highlight selected
+	selected_button = panel
+	panel.modulate = Color(0.7, 1, 0.7)
 
 	part_selected.emit(part)
+	print("PartPalette: Selected ", part.part_name)
