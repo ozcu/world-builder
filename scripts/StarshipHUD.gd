@@ -21,12 +21,12 @@ func create_designer_button() -> void:
 	designer_button.custom_minimum_size = Vector2(80, 25)
 	designer_button.add_theme_font_size_override("font_size", 10)
 
-	# Position in bottom-left corner
+	# Position in bottom-left corner, above velocity HUD
 	designer_button.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	designer_button.offset_left = 10
-	designer_button.offset_top = -35
+	designer_button.offset_top = -120  # Moved up to avoid overlap with velocity HUD
 	designer_button.offset_right = 90
-	designer_button.offset_bottom = -10
+	designer_button.offset_bottom = -95
 
 	designer_button.pressed.connect(_on_designer_button_pressed)
 	add_child(designer_button)

@@ -138,6 +138,11 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	"""Apply a ship design from the ship designer to this starship"""
 	ship_definition = design
 
+	# Hide the original ship sprite - we're replacing it with the design
+	var original_sprite = get_node_or_null("Sprite2D")
+	if original_sprite:
+		original_sprite.visible = false
+
 	# Remove old renderer if exists
 	if ship_renderer:
 		ship_renderer.queue_free()
@@ -147,6 +152,7 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	ship_renderer.ship_definition = design
 	ship_renderer.cell_size = 2  # Much smaller than designer (32 -> 2)
 	ship_renderer.auto_center = true
+	ship_renderer.position = Vector2.ZERO  # Center on Starship origin
 	ship_renderer.z_index = -1  # Behind thruster sprites
 	add_child(ship_renderer)
 

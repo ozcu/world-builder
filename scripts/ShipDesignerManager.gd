@@ -46,9 +46,17 @@ func open_designer() -> void:
 
 	# Create designer instance
 	ship_designer_instance = ship_designer_scene.instantiate()
+	add_child(ship_designer_instance)
 
-	# Reset anchors to not fill screen
-	ship_designer_instance.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	# CRITICAL: Reset ALL anchors to prevent auto-scaling
+	ship_designer_instance.anchor_left = 0.0
+	ship_designer_instance.anchor_top = 0.0
+	ship_designer_instance.anchor_right = 0.0
+	ship_designer_instance.anchor_bottom = 0.0
+	ship_designer_instance.offset_left = 0.0
+	ship_designer_instance.offset_top = 0.0
+	ship_designer_instance.offset_right = 0.0
+	ship_designer_instance.offset_bottom = 0.0
 	ship_designer_instance.grow_horizontal = Control.GROW_DIRECTION_END
 	ship_designer_instance.grow_vertical = Control.GROW_DIRECTION_END
 
@@ -58,18 +66,38 @@ func open_designer() -> void:
 
 	# Position in bottom-right corner
 	ship_designer_instance.position = Vector2(viewport_size.x - designer_size.x, viewport_size.y - designer_size.y)
-	ship_designer_instance.custom_minimum_size = designer_size
 	ship_designer_instance.size = designer_size
 
-	# Make background semi-transparent
+	# Make background semi-transparent and fix anchors
 	var bg = ship_designer_instance.get_node("Background")
 	if bg:
 		bg.color = Color(0.15, 0.15, 0.17, 0.85)  # Semi-transparent
+		# Reset background to fill designer
+		bg.anchor_left = 0.0
+		bg.anchor_top = 0.0
+		bg.anchor_right = 1.0
+		bg.anchor_bottom = 1.0
+		bg.offset_left = 0.0
+		bg.offset_top = 0.0
+		bg.offset_right = 0.0
+		bg.offset_bottom = 0.0
 
-	add_child(ship_designer_instance)
+	# Fix MainLayout to fill designer
+	var main_layout = ship_designer_instance.get_node("MainLayout")
+	if main_layout:
+		main_layout.anchor_left = 0.0
+		main_layout.anchor_top = 0.0
+		main_layout.anchor_right = 1.0
+		main_layout.anchor_bottom = 1.0
+		main_layout.offset_left = 0.0
+		main_layout.offset_top = 0.0
+		main_layout.offset_right = 0.0
+		main_layout.offset_bottom = 0.0
 
 	is_open = true
 	print("ShipDesignerManager: Designer opened at ", ship_designer_instance.position, " with size ", designer_size)
+	print("  Viewport size: ", viewport_size)
+	print("  Actual size after: ", ship_designer_instance.size)
 
 func close_designer() -> void:
 	if !ship_designer_instance:

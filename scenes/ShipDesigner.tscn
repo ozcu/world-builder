@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/ship_designer/ShipDesigner.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/ship_designer/GridEditor.gd" id="2"]
@@ -8,6 +8,9 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.1, 0.1, 0.12, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_separator"]
+bg_color = Color(0.4, 0.4, 0.45, 1)
 
 [node name="ShipDesigner" type="Control"]
 layout_mode = 3
@@ -50,6 +53,7 @@ custom_minimum_size = Vector2(200, 0)
 
 [node name="Separator1" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
 
 [node name="SaveButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
@@ -65,6 +69,7 @@ text = "Clear"
 
 [node name="Separator2" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
 
 [node name="OrientationButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
@@ -78,6 +83,7 @@ toggle_mode = true
 
 [node name="Separator3" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
 
 [node name="ApplyButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
