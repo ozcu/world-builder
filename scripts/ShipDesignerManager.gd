@@ -72,10 +72,9 @@ func open_designer() -> void:
 	ship_designer_instance.position = Vector2(0, viewport_size.y - designer_size.y)
 	ship_designer_instance.size = designer_size
 
-	# Scale down the content to fit the smaller window
-	# Designer is designed for ~1200x800, so scale to fit 1/4 screen
-	var scale_factor = min(designer_size.x / 1200.0, designer_size.y / 800.0)
-	ship_designer_instance.scale = Vector2(scale_factor, scale_factor)
+	# NO SCALING - just set the size and let layout containers adapt
+	print("  Setting designer size to: ", designer_size, " pixels")
+	print("  Viewport size is: ", viewport_size, " pixels")
 
 	# Make background semi-transparent and fix anchors
 	var bg = ship_designer_instance.get_node("Background")
