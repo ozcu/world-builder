@@ -3,7 +3,7 @@
 extends Control
 
 # UI References
-@onready var grid_editor: Node2D = $MainLayout/ContentArea/CenterContainer/GridEditorScroll/GridEditor
+@onready var grid_editor: Node2D = $MainLayout/ContentArea/CenterContainer/GridEditorScroll/GridEditorControl/GridEditor
 @onready var tile_palette: Control = $MainLayout/ContentArea/LeftPanel/ScrollContainer/TilePalette
 @onready var part_palette: Control = $MainLayout/ContentArea/RightPanel/ScrollContainer/PartPalette
 @onready var stats_panel: Control = $MainLayout/BottomPanel/StatsPanel

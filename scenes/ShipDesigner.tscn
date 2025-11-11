@@ -101,8 +101,14 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="GridEditorScroll" type="ScrollContainer" parent="MainLayout/ContentArea/CenterContainer"]
 layout_mode = 2
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 2
 
-[node name="GridEditor" type="Node2D" parent="MainLayout/ContentArea/CenterContainer/GridEditorScroll"]
+[node name="GridEditorControl" type="Control" parent="MainLayout/ContentArea/CenterContainer/GridEditorScroll"]
+layout_mode = 2
+custom_minimum_size = Vector2(2048, 2048)
+
+[node name="GridEditor" type="Node2D" parent="MainLayout/ContentArea/CenterContainer/GridEditorScroll/GridEditorControl"]
 script = ExtResource("2")
 
 [node name="RightPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
