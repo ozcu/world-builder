@@ -249,6 +249,9 @@ func update_preview() -> void:
 
 func get_centered_grid_position(cursor_pos: Vector2i, part: ShipPart, rotation: int) -> Vector2i:
 	"""Calculate grid position to center a rotated part at the cursor position"""
+	# Work in world (pixel) coordinates with floats to avoid precision loss
+	var cursor_world = Vector2(cursor_pos.x * cell_size, cursor_pos.y * cell_size)
+
 	var size = part.size
 	var rotated_size = size
 
@@ -256,9 +259,15 @@ func get_centered_grid_position(cursor_pos: Vector2i, part: ShipPart, rotation: 
 	if rotation == 90 or rotation == 270:
 		rotated_size = Vector2i(size.y, size.x)  # Swap width and height
 
-	# Offset by half the rotated size (rounded down) to center the part
-	var center_offset = Vector2i(-rotated_size.x / 2, -rotated_size.y / 2)
-	return cursor_pos + center_offset
+	# Calculate rotated size in pixels
+	var rotated_size_pixels = Vector2(rotated_size.x * cell_size, rotated_size.y * cell_size)
+
+	# Calculate top-left corner position to center the part at cursor
+	# Subtract half the rotated size (in pixels) from cursor position
+	var top_left_world = cursor_world - rotated_size_pixels / 2.0
+
+	# Convert back to grid coordinates (floor to get integer grid position)
+	return Vector2i(floor(top_left_world.x / cell_size), floor(top_left_world.y / cell_size))
 
 func get_corridor_preview_sprite(pos: Vector2i) -> Texture2D:
 	# Simulate what the corridor would look like if placed here
