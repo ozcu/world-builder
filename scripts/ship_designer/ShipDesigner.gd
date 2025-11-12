@@ -11,7 +11,6 @@ extends Control
 @onready var save_button: Button = $MainLayout/TopPanel/Toolbar/SaveButton
 @onready var load_button: Button = $MainLayout/TopPanel/Toolbar/LoadButton
 @onready var clear_button: Button = $MainLayout/TopPanel/Toolbar/ClearButton
-@onready var orientation_button: Button = $MainLayout/TopPanel/Toolbar/OrientationButton
 @onready var erase_button: Button = $MainLayout/TopPanel/Toolbar/EraseButton
 @onready var apply_button: Button = $MainLayout/TopPanel/Toolbar/ApplyButton
 @onready var close_button: Button = $MainLayout/TopPanel/Toolbar/CloseButton
@@ -27,7 +26,6 @@ var parts_library: Dictionary = {}
 var selected_tool: String = "tile"  # "tile", "part", "erase"
 var selected_tile: ShipTile = null
 var selected_part: ShipPart = null
-var part_orientation_horizontal: bool = true
 
 func _ready() -> void:
 	# Initialize new ship
@@ -102,9 +100,6 @@ func connect_signals() -> void:
 	if clear_button:
 		clear_button.pressed.connect(_on_clear_pressed)
 
-	if orientation_button:
-		orientation_button.toggled.connect(_on_orientation_toggled)
-
 	if erase_button:
 		erase_button.toggled.connect(_on_erase_toggled)
 
@@ -139,11 +134,6 @@ func update_stats() -> void:
 	var validation = current_ship.validate()
 
 	stats_panel.update_stats(current_ship.metadata, validation)
-
-func toggle_orientation() -> void:
-	part_orientation_horizontal = !part_orientation_horizontal
-	if grid_editor:
-		grid_editor.set_orientation(part_orientation_horizontal)
 
 func save_ship(filepath: String) -> void:
 	var json = current_ship.to_json()
@@ -206,18 +196,6 @@ func _on_load_pressed() -> void:
 
 func _on_clear_pressed() -> void:
 	clear_ship()
-
-func _on_orientation_toggled(pressed: bool) -> void:
-	part_orientation_horizontal = !pressed
-	if grid_editor:
-		grid_editor.set_orientation(part_orientation_horizontal)
-
-	# Update button text
-	if orientation_button:
-		if pressed:
-			orientation_button.text = "Orientation: Vertical"
-		else:
-			orientation_button.text = "Orientation: Horizontal"
 
 func _on_erase_toggled(pressed: bool) -> void:
 	if pressed:

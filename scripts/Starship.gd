@@ -13,6 +13,7 @@ var thrust_amount: float = 0.0
 @onready var thruster_left: Sprite2D = $ThrusterLeft
 @onready var thruster_center: Sprite2D = $ThrusterCenter
 @onready var thruster_right: Sprite2D = $ThrusterRight
+@onready var collision_polygon: CollisionPolygon2D = $CollisionPolygon2D
 
 func _ready() -> void:
 	# CharacterBody2D doesn't need physics setup
@@ -182,6 +183,9 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	# (In case _ready() didn't trigger yet)
 	ship_renderer.call_deferred("render_ship")
 
+	# Update collision shape to match ship design bounds
+	update_collision_shape(bounds)
+
 	print("Starship: Applied ship design '", design.ship_name, "'")
 	print("  Tiles: ", design.tile_positions.size())
 	print("  Parts: ", design.parts.size())
@@ -208,3 +212,41 @@ func apply_ship_design(design: ShipDefinition) -> void:
 		var part_center_world = ship_renderer.position + part_center_grid * float(ship_renderer.cell_size)
 		print("    Part ", i, ": ", placement.part.part_name, " at grid ", placement.grid_position,
 		      " rotation ", placement.rotation, "° -> world center ", part_center_world)
+
+func update_collision_shape(bounds: Rect2i) -> void:
+	"""Update the collision polygon to match the ship design bounds"""
+	if !collision_polygon:
+		print("Starship: No collision polygon found!")
+		return
+
+	# Calculate the rectangle in pixel coordinates centered on (0, 0)
+	# Since we positioned the renderer so design center is at (0, 0),
+	# we need to create a collision box that covers the bounds relative to center
+
+	var cell_size = 32  # Must match ship_renderer.cell_size
+
+	# Calculate design center
+	var design_center_grid = Vector2(
+		bounds.position.x + bounds.size.x / 2.0,
+		bounds.position.y + bounds.size.y / 2.0
+	)
+
+	# Convert bounds to pixel coordinates relative to design center
+	var min_corner = (Vector2(bounds.position) - design_center_grid) * cell_size
+	var max_corner = (Vector2(bounds.position + bounds.size) - design_center_grid) * cell_size
+
+	# Create a rectangle polygon (clockwise from top-left)
+	var polygon = PackedVector2Array([
+		Vector2(min_corner.x, min_corner.y),  # Top-left
+		Vector2(max_corner.x, min_corner.y),  # Top-right
+		Vector2(max_corner.x, max_corner.y),  # Bottom-right
+		Vector2(min_corner.x, max_corner.y)   # Bottom-left
+	])
+
+	collision_polygon.polygon = polygon
+
+	print("Starship: Updated collision polygon:")
+	print("  Bounds in grid: ", bounds)
+	print("  Min corner (pixels): ", min_corner)
+	print("  Max corner (pixels): ", max_corner)
+	print("  Polygon: ", polygon)
