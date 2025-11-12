@@ -145,6 +145,9 @@ func _on_panel_input(event: InputEvent, part: ShipPart, panel: Control) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			_on_part_button_pressed(part, panel)
+			# Consume the event to prevent it from reaching the GridEditor
+			get_viewport().set_input_as_handled()
+			panel.accept_event()
 
 func _on_panel_hover(panel: Control, entered: bool) -> void:
 	if selected_button == panel:

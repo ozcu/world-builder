@@ -46,6 +46,7 @@ func render_ship() -> void:
 		sprite.texture = tile.sprite
 		sprite.position = offset + Vector2(pos.x * cell_size, pos.y * cell_size)
 		sprite.centered = false
+		sprite.modulate = Color(1, 1, 1, 1)  # Fully opaque
 		add_child(sprite)
 
 		tile_sprites[pos] = sprite
@@ -67,6 +68,7 @@ func render_ship() -> void:
 		sprite.texture = placement.part.sprite
 		sprite.position = base_position
 		sprite.centered = false
+		sprite.modulate = Color(1, 1, 1, 1)  # Fully opaque
 
 		# Apply rotation (0, 90, 180, 270)
 		var rotation_angle = placement.rotation
