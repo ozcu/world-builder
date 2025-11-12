@@ -71,11 +71,6 @@ text = "Clear"
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
 
-[node name="OrientationButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
-layout_mode = 2
-text = "Orientation: Horizontal"
-toggle_mode = true
-
 [node name="EraseButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
 text = "Erase Mode"

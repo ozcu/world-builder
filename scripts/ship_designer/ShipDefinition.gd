@@ -312,6 +312,16 @@ static func from_json(json: Dictionary, tiles_library: Dictionary, parts_library
 		else:
 			print("Warning: Unknown part type '", part_id, "' in saved ship")
 
+	# Re-auto-tile all corridors after loading
+	# This ensures corridor connections (T-junctions, etc.) are properly rendered
+	print("ShipDefinition: Re-auto-tiling ", ship.tile_positions.size(), " corridors after load")
+	for i in ship.tile_positions.size():
+		var pos = ship.tile_positions[i]
+		var tile = ship.tile_data[i]
+		if tile and tile.tile_type == PartCategory.TileType.CORRIDOR:
+			AutoTiler.update_corridor_and_neighbors(ship, pos)
+	print("ShipDefinition: Corridor auto-tiling complete")
+
 	# Recalculate metadata
 	ship._recalculate_metadata()
 

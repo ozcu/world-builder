@@ -209,21 +209,28 @@ func update_preview() -> void:
 		hover_preview.rotation = deg_to_rad(current_rotation)
 
 		# Calculate rotation offset to keep sprite at same grid cell
+		# When centered=false, rotation happens around top-left (0,0) of sprite
+		# We need to offset so the rotated sprite's visual position stays at the same grid cell
 		var size = current_part.size
 		var rotation_offset = Vector2.ZERO
+
 		match current_rotation:
 			90:
-				# Rotated 90° clockwise: shift down by width
+				# After 90° CW rotation, shift down by original width to keep visual position
 				rotation_offset = Vector2(0, size.x * cell_size)
 			180:
-				# Rotated 180°: shift by width and height
+				# After 180° rotation, shift by original width and height
 				rotation_offset = Vector2(size.x * cell_size, size.y * cell_size)
 			270:
-				# Rotated 270°: shift right by height
+				# After 270° CW rotation, shift right by original height
 				rotation_offset = Vector2(size.y * cell_size, 0)
 
 		# Set position with rotation offset
 		hover_preview.position = base_position + rotation_offset
+
+		if current_rotation != 0:
+			print("  Preview debug: grid=", hover_position, " base=", base_position,
+			      " offset=", rotation_offset, " final=", hover_preview.position, " rot=", current_rotation, "°")
 
 		# Set color based on valid placement (after position is set)
 		if can_place_current_part():
