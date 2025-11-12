@@ -165,7 +165,8 @@ func handle_input(event: InputEvent) -> void:
 
 func update_hover(mouse_pos: Vector2) -> void:
 	# Convert mouse position to grid coordinates
-	var local_pos = to_local(mouse_pos)
+	# Mouse pos is in GridEditorControl's local space, account for GridEditor's position (pan offset)
+	var local_pos = mouse_pos - position
 	var grid_pos = Vector2i(
 		int(local_pos.x / cell_size),
 		int(local_pos.y / cell_size)
