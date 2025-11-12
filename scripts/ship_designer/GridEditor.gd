@@ -165,8 +165,9 @@ func handle_input(event: InputEvent) -> void:
 
 func update_hover(mouse_pos: Vector2) -> void:
 	# Convert mouse position to grid coordinates
-	# Mouse pos is in GridEditorControl's local space, account for GridEditor's position (pan offset)
-	var local_pos = mouse_pos - position
+	# Mouse pos is in GridEditorControl's local space
+	# Account for GridEditor's position (pan offset) and scale (zoom level)
+	var local_pos = (mouse_pos - position) / scale.x
 	var grid_pos = Vector2i(
 		int(local_pos.x / cell_size),
 		int(local_pos.y / cell_size)
@@ -212,29 +213,27 @@ func update_preview() -> void:
 		# Apply rotation FIRST
 		hover_preview.rotation = deg_to_rad(current_rotation)
 
-		# Calculate rotation offset to keep sprite at same grid cell
-		# When centered=false, rotation happens around top-left (0,0) of sprite
-		# We need to offset so the rotated sprite's visual position stays at the same grid cell
+		# Calculate grid position to center the part at the cursor
+		var adjusted_grid_pos = get_centered_grid_position(hover_position, current_part, current_rotation)
+		var adjusted_base_pos = Vector2(adjusted_grid_pos.x * cell_size, adjusted_grid_pos.y * cell_size)
+
+		# Calculate rotation offset for sprite rendering
 		var size = current_part.size
 		var rotation_offset = Vector2.ZERO
-
 		match current_rotation:
 			90:
-				# After 90° CW rotation, shift down by original width to keep visual position
 				rotation_offset = Vector2(0, size.x * cell_size)
 			180:
-				# After 180° rotation, shift by original width and height
 				rotation_offset = Vector2(size.x * cell_size, size.y * cell_size)
 			270:
-				# After 270° CW rotation, shift right by original height
 				rotation_offset = Vector2(size.y * cell_size, 0)
 
-		# Set position with rotation offset
-		hover_preview.position = base_position + rotation_offset
+		# Set position with both adjustments
+		hover_preview.position = adjusted_base_pos + rotation_offset
 
 		if current_rotation != 0:
-			print("  Preview debug: grid=", hover_position, " base=", base_position,
-			      " offset=", rotation_offset, " final=", hover_preview.position, " rot=", current_rotation, "°")
+			print("  Preview debug: cursor_grid=", hover_position, " adjusted_grid=", adjusted_grid_pos,
+			      " rot=", current_rotation, "°")
 
 		# Set color based on valid placement (after position is set)
 		if can_place_current_part():
@@ -248,6 +247,19 @@ func update_preview() -> void:
 	else:
 		hover_preview.visible = false
 
+func get_centered_grid_position(cursor_pos: Vector2i, part: ShipPart, rotation: int) -> Vector2i:
+	"""Calculate grid position to center a rotated part at the cursor position"""
+	var size = part.size
+	var rotated_size = size
+
+	# Get rotated dimensions
+	if rotation == 90 or rotation == 270:
+		rotated_size = Vector2i(size.y, size.x)  # Swap width and height
+
+	# Offset by half the rotated size (rounded down) to center the part
+	var center_offset = Vector2i(-rotated_size.x / 2, -rotated_size.y / 2)
+	return cursor_pos + center_offset
+
 func get_corridor_preview_sprite(pos: Vector2i) -> Texture2D:
 	# Simulate what the corridor would look like if placed here
 	# Check what's currently at this position and neighboring cells
@@ -260,7 +272,8 @@ func can_place_current_part() -> bool:
 
 	var placement = PartPlacement.new()
 	placement.part = current_part
-	placement.grid_position = hover_position
+	# Use centered grid position for rotated parts
+	placement.grid_position = get_centered_grid_position(hover_position, current_part, current_rotation)
 	placement.rotation = current_rotation
 
 	return ship_definition.can_place_part(placement)
@@ -282,16 +295,19 @@ func paint_part_at_hover() -> void:
 	if hover_position.x < 0 or hover_position.y < 0:
 		return
 
+	# Use centered grid position for rotated parts
+	var centered_pos = get_centered_grid_position(hover_position, current_part, current_rotation)
+
 	# Only paint if we've moved to a new cell
-	if hover_position == last_painted_cell:
+	if centered_pos == last_painted_cell:
 		return
 
 	# Only paint if placement is valid
 	if !can_place_current_part():
 		return
 
-	last_painted_cell = hover_position
-	place_part(hover_position, current_part)
+	last_painted_cell = centered_pos
+	place_part(centered_pos, current_part)
 
 func erase_at_hover() -> void:
 	"""Continuously erase tiles/parts while dragging mouse"""
@@ -314,7 +330,9 @@ func handle_click(_mouse_pos: Vector2) -> void:
 		place_tile(hover_position, current_tile)
 
 	elif current_tool == "part" and current_part:
-		place_part(hover_position, current_part)
+		# Use centered grid position for rotated parts
+		var centered_pos = get_centered_grid_position(hover_position, current_part, current_rotation)
+		place_part(centered_pos, current_part)
 
 	elif current_tool == "erase":
 		erase_at(hover_position)
