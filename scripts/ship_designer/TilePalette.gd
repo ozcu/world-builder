@@ -158,9 +158,7 @@ func _on_panel_input(event: InputEvent, tile: ShipTile, panel: Control) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			_on_tile_button_pressed(tile, panel)
-			# Consume the event to prevent it from reaching the GridEditor
-			get_viewport().set_input_as_handled()
-			panel.accept_event()
+			# Event is consumed by gui_input naturally, no need to call set_input_as_handled
 
 func _on_panel_hover(panel: Control, entered: bool) -> void:
 	if selected_button == panel:

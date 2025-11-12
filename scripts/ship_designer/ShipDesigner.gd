@@ -90,6 +90,11 @@ func connect_signals() -> void:
 	if grid_editor:
 		grid_editor.ship_modified.connect(_on_ship_modified)
 
+	# Connect GridEditorControl's gui_input to forward to GridEditor
+	var grid_editor_control = $MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorControl
+	if grid_editor_control:
+		grid_editor_control.gui_input.connect(_on_grid_editor_control_input)
+
 	# Toolbar buttons
 	if save_button:
 		save_button.pressed.connect(_on_save_pressed)
@@ -226,6 +231,11 @@ func _on_close_pressed() -> void:
 		manager.close_designer()
 	else:
 		print("ShipDesigner: Could not find ShipDesignerManager")
+
+func _on_grid_editor_control_input(event: InputEvent) -> void:
+	"""Forward gui_input from GridEditorControl to GridEditor"""
+	if grid_editor and grid_editor.has_method("handle_input"):
+		grid_editor.handle_input(event)
 
 func _find_designer_manager() -> Node:
 	var root = get_tree().root

@@ -109,9 +109,8 @@ func draw_grid() -> void:
 		var y_pos = y * cell_size
 		draw_line(Vector2(0, y_pos), Vector2(grid_size.x * cell_size, y_pos), grid_color)
 
-func _unhandled_input(event: InputEvent) -> void:
-	# Handle keyboard and mouse input that wasn't consumed by UI elements
-	# This ensures clicks on palettes don't trigger grid placement
+func _input(event: InputEvent) -> void:
+	# Handle keyboard input globally
 	if event is InputEventKey:
 		if event.keycode == KEY_SPACE:
 			if event.pressed and not is_panning:
@@ -128,6 +127,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			update_preview()
 			print("GridEditor: Rotation set to ", current_rotation, "°")
 
+func handle_input(event: InputEvent) -> void:
+	# Handle mouse input forwarded from GridEditorControl's gui_input
+	# This is only called for mouse events on the grid area, not on palettes
 	if event is InputEventMouseMotion:
 		if is_panning:
 			# Pan the view
