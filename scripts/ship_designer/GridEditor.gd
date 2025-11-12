@@ -109,8 +109,9 @@ func draw_grid() -> void:
 		var y_pos = y * cell_size
 		draw_line(Vector2(0, y_pos), Vector2(grid_size.x * cell_size, y_pos), grid_color)
 
-func _input(event: InputEvent) -> void:
-	# Handle keyboard input
+func _unhandled_input(event: InputEvent) -> void:
+	# Handle keyboard and mouse input that wasn't consumed by UI elements
+	# This ensures clicks on palettes don't trigger grid placement
 	if event is InputEventKey:
 		if event.keycode == KEY_SPACE:
 			if event.pressed and not is_panning:
