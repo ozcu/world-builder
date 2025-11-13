@@ -2,11 +2,11 @@
 extends RigidBody2D
 
 @export var cruise_speed: float = 80.0
-@export var acceleration: float = 100.0
-@export var rotation_speed: float = 1.5
-@export var arrival_distance: float = 200.0  # Increased to avoid collision with stations
+@export var thrust_force: float = 5000.0
+@export var rotation_torque: float = 10000.0
+@export var arrival_distance: float = 200.0
 @export var separation_distance: float = 200.0
-@export var separation_force: float = 150.0
+@export var separation_force_multiplier: float = 3.0
 
 var current_target: Vector2 = Vector2.ZERO
 var ship_velocity: Vector2 = Vector2.ZERO
@@ -18,12 +18,12 @@ var nearby_ships: Array[Node2D] = []
 @onready var thruster_right: Sprite2D = $ThrusterRight
 
 func _ready() -> void:
-	# Set RigidBody2D properties (only if not already set in scene)
-	if mass == 1.0:  # Default RigidBody2D mass
-		mass = 500.0
-	gravity_scale = 0.0  # No gravity in space
-	lock_rotation = true  # Handle rotation manually for AI control
-	linear_damp = 0.1  # Minimal space friction
+	# Configure RigidBody2D for space physics
+	gravity_scale = 0.0
+	linear_damp = 0.8  # More drag for NPCs
+	angular_damp = 2.0
+	lock_rotation = false  # Allow physics-based rotation
+	mass = 500.0
 	contact_monitor = true
 	max_contacts_reported = 4
 
@@ -72,44 +72,48 @@ func _physics_process(delta: float) -> void:
 		_next_destination()
 		return
 
+	# Calculate desired velocity direction
+	var desired_direction = to_target.normalized()
+
 	# Slow down near target
 	var desired_speed = cruise_speed
-	if distance < 200.0:
-		desired_speed = cruise_speed * (distance / 200.0)
-		desired_speed = max(desired_speed, cruise_speed * 0.3)
-
-	# Calculate desired velocity
-	var desired_velocity = to_target.normalized() * desired_speed
+	if distance < 300.0:
+		desired_speed = cruise_speed * (distance / 300.0)
+		desired_speed = max(desired_speed, cruise_speed * 0.2)
 
 	# Apply separation force from nearby ships
 	var separation_vector = _calculate_separation()
-	desired_velocity += separation_vector
+	var final_direction = (desired_direction + separation_vector.normalized() * 0.5).normalized()
 
-	# Use forces instead of setting velocity directly
-	# This allows physics engine to handle collisions properly
-	var velocity_error = desired_velocity - linear_velocity
-	# Apply force with proper scaling for physics-based control
-	var force = velocity_error * mass * acceleration
-	# Limit max force to prevent extreme accelerations
-	var max_force = mass * acceleration * 10.0
-	if force.length() > max_force:
-		force = force.normalized() * max_force
-	apply_central_force(force)
+	# Calculate thrust force based on speed error
+	var current_speed = linear_velocity.length()
+	var speed_error = desired_speed - current_speed
+	var thrust = final_direction * thrust_force * clamp(speed_error / desired_speed, 0.0, 1.0)
+	apply_central_force(thrust)
 
-	# Limit speed
-	if linear_velocity.length() > cruise_speed * 1.5:
-		linear_velocity = linear_velocity.normalized() * (cruise_speed * 1.5)
-
-	# Track ship velocity for display purposes
-	ship_velocity = linear_velocity
-
-	# Rotate to face movement direction
+	# Rotate to face movement direction using torque
 	if linear_velocity.length() > 5.0:
 		var target_rotation = linear_velocity.angle() + PI / 2
-		rotation = lerp_angle(rotation, target_rotation, rotation_speed * delta)
+		var rotation_diff = angle_difference(rotation, target_rotation)
+
+		# Apply torque proportional to rotation error
+		var torque = rotation_diff * rotation_torque
+		apply_torque(torque)
+
+	# Track ship velocity
+	ship_velocity = linear_velocity
 
 	# Update thruster effects
 	_update_thrusters()
+
+func angle_difference(from: float, to: float) -> float:
+	"""Calculate the shortest angle difference between two angles"""
+	var diff = fmod(to - from, TAU)
+	if diff > PI:
+		diff -= TAU
+	elif diff < -PI:
+		diff += TAU
+	return diff
 
 func get_ship_velocity() -> Vector2:
 	return ship_velocity
@@ -128,7 +132,7 @@ func _calculate_separation() -> Vector2:
 			# Calculate repulsion force (stronger when closer)
 			var away_vector = (global_position - other_ship.global_position).normalized()
 			var strength = (separation_distance - distance) / separation_distance
-			separation += away_vector * strength * separation_force
+			separation += away_vector * strength * separation_force_multiplier
 			count += 1
 
 	if count > 0:

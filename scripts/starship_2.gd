@@ -1,12 +1,11 @@
 extends RigidBody2D
 
-@export var acceleration: float = 500.0
+@export var thrust_force: float = 15000.0
 @export var max_speed: float = 400.0
-@export var rotation_speed: float = 2.5
-@export var drag: float = 0.98  # inertia stabilization
-@export var reverse_factor: float = 0.5
+@export var rotation_torque: float = 50000.0
 
 var thrust_input := 0.0
+var rotation_input := 0.0
 var current_speed: float = 0.0
 
 # Node references
@@ -17,33 +16,42 @@ var current_speed: float = 0.0
 var ship_definition: ShipDefinition = null
 var ship_renderer: ShipRenderer = null
 
+func _ready() -> void:
+	# Configure RigidBody2D for space physics
+	gravity_scale = 0.0
+	linear_damp = 0.5  # Space drag
+	angular_damp = 2.0  # Rotation drag
+	lock_rotation = false  # Allow physics-based rotation
+	mass = 1000.0
+
 func _process(delta: float) -> void:
-	# Handle rotation
+	# Get rotation input
+	rotation_input = 0.0
 	if Input.is_action_pressed("ui_left"):
-		rotation -= rotation_speed * delta
+		rotation_input -= 1.0
 	if Input.is_action_pressed("ui_right"):
-		rotation += rotation_speed * delta
+		rotation_input += 1.0
 
-	# Update current speed for HUD
-	current_speed = linear_velocity.length()
-
-func _physics_process(delta: float) -> void:
 	# Get thrust input
 	thrust_input = 0.0
 	if Input.is_action_pressed("ui_up"):
 		thrust_input = 1.0
 	elif Input.is_action_pressed("ui_down"):
-		thrust_input = -reverse_factor
+		thrust_input = -0.5
+
+	# Update current speed for HUD
+	current_speed = linear_velocity.length()
+
+func _physics_process(delta: float) -> void:
+	# Apply rotation torque
+	if rotation_input != 0.0:
+		apply_torque(rotation_input * rotation_torque * delta)
 
 	# Apply thrust force
 	if thrust_input != 0.0:
-		var forward := -transform.y  # ship faces +Y
-		var thrust_force = forward * acceleration * thrust_input * mass
-		apply_central_force(thrust_force)
-
-	# Apply drag
-	var drag_force = -linear_velocity * (1.0 - drag) * mass / delta
-	apply_central_force(drag_force)
+		var forward := -transform.y  # ship faces +Y (up)
+		var force = forward * thrust_force * thrust_input
+		apply_central_force(force)
 
 	# Speed limit
 	if linear_velocity.length() > max_speed:
@@ -52,6 +60,10 @@ func _physics_process(delta: float) -> void:
 func get_speed() -> float:
 	"""Return current speed for HUD display"""
 	return current_speed
+
+func get_ship_velocity() -> Vector2:
+	"""Return velocity for collision detection"""
+	return linear_velocity
 
 func apply_ship_design(design: ShipDefinition) -> void:
 	"""Apply a ship design from the ship designer to this starship"""
@@ -68,7 +80,7 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	# Create new renderer
 	ship_renderer = ShipRenderer.new()
 	ship_renderer.ship_definition = design
-	ship_renderer.cell_size = 32  # Same scale as designer for clarity (1:1 scale)
+	ship_renderer.cell_size = 32  # Same scale as designer (1:1 scale)
 	ship_renderer.auto_center = false  # We'll center manually on Starship origin
 	ship_renderer.z_index = -1  # Behind everything
 
@@ -89,7 +101,6 @@ func apply_ship_design(design: ShipDefinition) -> void:
 	add_child(ship_renderer)
 
 	# Explicitly call render_ship after it's added to scene tree
-	# (In case _ready() didn't trigger yet)
 	ship_renderer.call_deferred("render_ship")
 
 	# Update collision shape to match ship design bounds
