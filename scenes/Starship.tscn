@@ -4,9 +4,16 @@
 [ext_resource type="Texture2D" uid="uid://bqpjbqetjeixx" path="res://assets/textures/player-ship.png" id="2_texture"]
 [ext_resource type="Texture2D" uid="uid://k4l80gdocyhc" path="res://assets/textures/thruster.svg" id="3_thruster"]
 
-[node name="Starship" type="CharacterBody2D"]
+[node name="Starship" type="RigidBody2D"]
 collision_layer = 1
 collision_mask = 7
+mass = 1000.0
+gravity_scale = 0.0
+lock_rotation = false
+linear_damp = 0.1
+angular_damp = 1.5
+contact_monitor = true
+max_contacts_reported = 4
 script = ExtResource("1_starship")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
