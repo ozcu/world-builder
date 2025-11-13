@@ -2,7 +2,7 @@ extends RigidBody2D
 
 @export var thrust_force: float = 25000.0  # Increased for faster acceleration
 @export var max_speed: float = 400.0
-@export var rotation_torque: float = 80000.0  # Increased for more responsive rotation
+@export var rotation_torque: float = 150000.0  # Increased for faster rotation
 
 var thrust_input := 0.0
 var rotation_input := 0.0
@@ -20,7 +20,7 @@ func _ready() -> void:
 	# Configure RigidBody2D for space physics
 	gravity_scale = 0.0
 	linear_damp = 0.1  # Reduced drag - ship coasts longer in space
-	angular_damp = 1.5  # Slightly reduced for smoother rotation
+	angular_damp = 0.8  # Lower value for faster rotation response
 	lock_rotation = false  # Allow physics-based rotation
 	mass = 1000.0
 
