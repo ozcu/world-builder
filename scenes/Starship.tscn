@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dimkviojal2v7"]
 
-[ext_resource type="Script" uid="uid://w2kaav8shqt7" path="res://scripts/starship_2.gd" id="1_gunj8"]
+[ext_resource type="Script" uid="uid://cq5h8m9n3kptx" path="res://scripts/Starship.gd" id="1_starship"]
 [ext_resource type="Texture2D" uid="uid://bqpjbqetjeixx" path="res://assets/textures/player-ship.png" id="2_texture"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qmy6f"]
@@ -14,7 +14,7 @@ linear_damp = 0.5
 angular_damp = 2.0
 contact_monitor = true
 max_contacts_reported = 4
-script = ExtResource("1_gunj8")
+script = ExtResource("1_starship")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_texture")
