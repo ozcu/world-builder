@@ -211,7 +211,7 @@ func apply_ship_design(design: ShipDefinition) -> void:
 		var part_center_grid = Vector2(placement.grid_position.x, placement.grid_position.y) + Vector2(placement.part.size.x, placement.part.size.y) / 2.0
 		var part_center_world = ship_renderer.position + part_center_grid * float(ship_renderer.cell_size)
 		print("    Part ", i, ": ", placement.part.part_name, " at grid ", placement.grid_position,
-		      " rotation ", placement.rotation, "° -> world center ", part_center_world)
+			  " rotation ", placement.rotation, "° -> world center ", part_center_world)
 
 func update_collision_shape(bounds: Rect2i) -> void:
 	"""Update the collision polygon to match the ship design bounds"""

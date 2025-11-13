@@ -1,5 +1,5 @@
 # res://scripts/NPCShip.gd
-extends CharacterBody2D
+extends RigidBody2D
 
 @export var cruise_speed: float = 80.0
 @export var acceleration: float = 100.0
@@ -7,7 +7,6 @@ extends CharacterBody2D
 @export var arrival_distance: float = 200.0  # Increased to avoid collision with stations
 @export var separation_distance: float = 200.0
 @export var separation_force: float = 150.0
-@export var mass: float = 500.0  # Ship mass for collision physics
 
 var current_target: Vector2 = Vector2.ZERO
 var ship_velocity: Vector2 = Vector2.ZERO
@@ -19,6 +18,15 @@ var nearby_ships: Array[Node2D] = []
 @onready var thruster_right: Sprite2D = $ThrusterRight
 
 func _ready() -> void:
+	# Set RigidBody2D properties (only if not already set in scene)
+	if mass == 1.0:  # Default RigidBody2D mass
+		mass = 500.0
+	gravity_scale = 0.0  # No gravity in space
+	lock_rotation = true  # Handle rotation manually for AI control
+	linear_damp = 0.1  # Minimal space friction
+	contact_monitor = true
+	max_contacts_reported = 4
+
 	# Find all starhubs in the scene
 	call_deferred("_find_hubs")
 
@@ -36,7 +44,7 @@ func _find_hubs() -> void:
 		_pick_random_target()
 
 func _find_nearby_ships(node: Node) -> void:
-	if node != self and node is CharacterBody2D and node.name.begins_with("NPCShip"):
+	if node != self and node is RigidBody2D and node.name.begins_with("NPCShip"):
 		nearby_ships.append(node)
 	for child in node.get_children():
 		_find_nearby_ships(child)
@@ -77,62 +85,31 @@ func _physics_process(delta: float) -> void:
 	var separation_vector = _calculate_separation()
 	desired_velocity += separation_vector
 
-	# Smoothly adjust current velocity
-	ship_velocity = ship_velocity.lerp(desired_velocity, acceleration * delta / cruise_speed)
+	# Use forces instead of setting velocity directly
+	# This allows physics engine to handle collisions properly
+	var velocity_error = desired_velocity - linear_velocity
+	# Apply force with proper scaling for physics-based control
+	var force = velocity_error * mass * acceleration
+	# Limit max force to prevent extreme accelerations
+	var max_force = mass * acceleration * 10.0
+	if force.length() > max_force:
+		force = force.normalized() * max_force
+	apply_central_force(force)
+
+	# Limit speed
+	if linear_velocity.length() > cruise_speed * 1.5:
+		linear_velocity = linear_velocity.normalized() * (cruise_speed * 1.5)
+
+	# Track ship velocity for display purposes
+	ship_velocity = linear_velocity
 
 	# Rotate to face movement direction
-	if ship_velocity.length() > 5.0:
-		var target_rotation = ship_velocity.angle() + PI / 2
+	if linear_velocity.length() > 5.0:
+		var target_rotation = linear_velocity.angle() + PI / 2
 		rotation = lerp_angle(rotation, target_rotation, rotation_speed * delta)
-
-	# Apply movement
-	velocity = ship_velocity
-	move_and_slide()
-
-	# Handle collisions with other ships
-	_handle_collisions()
 
 	# Update thruster effects
 	_update_thrusters()
-
-func _handle_collisions() -> void:
-	for i in get_slide_collision_count():
-		var collision = get_slide_collision(i)
-		var collider = collision.get_collider()
-
-		# Check if we collided with another ship or space station
-		var is_ship = collider is CharacterBody2D and (collider.name.begins_with("NPCShip") or collider.name.begins_with("Starship"))
-		var is_station = collider is StaticBody2D and collider.name.begins_with("SpaceStation")
-
-		if is_ship or is_station:
-			# Get the other object's mass and velocity
-			var other_mass = collider.get("mass")
-			if other_mass == null:
-				other_mass = 500.0  # Default mass if not set
-
-			var other_velocity = Vector2.ZERO
-			# Static bodies don't move
-			if is_ship:
-				if collider.has_method("get_ship_velocity"):
-					other_velocity = collider.get_ship_velocity()
-				elif collider.get("ship_velocity") != null:
-					other_velocity = collider.get("ship_velocity")
-
-			# Calculate collision normal and relative velocity
-			var collision_normal = collision.get_normal()
-			var relative_velocity = ship_velocity - other_velocity
-
-			# Only apply force if moving toward the object
-			var closing_speed = relative_velocity.dot(collision_normal)
-			if closing_speed < 0:
-				# Apply momentum-based collision response
-				# Using coefficient of restitution (bounciness) of 0.5
-				var restitution = 0.5
-				var impulse_magnitude = -(1 + restitution) * closing_speed / (1.0/mass + 1.0/other_mass)
-
-				# Apply impulse to this ship
-				var impulse = collision_normal * impulse_magnitude / mass
-				ship_velocity += impulse
 
 func get_ship_velocity() -> Vector2:
 	return ship_velocity

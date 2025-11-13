@@ -2,8 +2,9 @@
 extends CanvasLayer
 
 @onready var speed_label: Label = $MarginContainer/VBoxContainer/SpeedLabel
+@onready var mass_label: Label = $MarginContainer/VBoxContainer/MassLabel
 
-var starship: CharacterBody2D = null
+var starship: Node2D = null
 var designer_manager: Node = null
 var designer_button: Button = null
 
@@ -65,3 +66,8 @@ func _process(_delta: float) -> void:
 	if starship.has_method("get_speed"):
 		var speed: float = starship.get_speed()
 		speed_label.text = "Speed: %.1f m/s" % speed
+
+	# Display mass
+	if starship.get("mass") != null:
+		var mass: float = starship.mass
+		mass_label.text = "Mass: %.1f kg" % mass

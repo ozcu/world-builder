@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ckiv86tn1e5q5"
+path="res://.godot/imported/02 Space Riddle.mp3-e35c1ac5a8bf55511a0e24a0fa776b75.mp3str"
+
+[deps]
+
+source_file="res://assets/music/02 Space Riddle.mp3"
+dest_files=["res://.godot/imported/02 Space Riddle.mp3-e35c1ac5a8bf55511a0e24a0fa776b75.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

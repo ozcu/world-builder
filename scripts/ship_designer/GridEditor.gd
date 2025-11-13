@@ -33,6 +33,9 @@ var camera_offset: Vector2 = Vector2.ZERO
 var renderer: ShipRenderer
 var hover_preview: Sprite2D
 var hover_position: Vector2i = Vector2i(-1, -1)
+var last_mouse_position: Vector2 = Vector2.ZERO  # Store exact mouse position for rotation
+var last_local_position: Vector2 = Vector2.ZERO  # Store exact local position (with sub-cell precision)
+var locked_center_pos: Vector2 = Vector2.ZERO  # Lock the center position in world coordinates
 var background_sprite: Sprite2D
 
 func _ready() -> void:
@@ -123,9 +126,25 @@ func _input(event: InputEvent) -> void:
 				Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		elif event.keycode == KEY_R and event.pressed:
 			# Rotate part by 90 degrees clockwise
+			if current_tool == "part" and current_part:
+				# On first rotation, lock the CENTER position of the part
+				if locked_center_pos == Vector2.ZERO:
+					# Calculate where the part currently is
+					var grid_pos = get_centered_grid_position_from_local(last_local_position, current_part, current_rotation)
+					# Calculate center in world coordinates
+					var size = current_part.size
+					locked_center_pos = Vector2(
+						grid_pos.x * cell_size + (size.x * cell_size) / 2.0,
+						grid_pos.y * cell_size + (size.y * cell_size) / 2.0
+					)
+					print("GridEditor: LOCKED center at ", locked_center_pos, " (world pixels)")
+
+			# Apply rotation
 			current_rotation = (current_rotation + 90) % 360
-			update_preview()
 			print("GridEditor: Rotation set to ", current_rotation, "°")
+
+			# Force preview update to render immediately
+			update_preview()
 
 func handle_input(event: InputEvent) -> void:
 	# Handle mouse input forwarded from GridEditorControl's gui_input
@@ -164,10 +183,20 @@ func handle_input(event: InputEvent) -> void:
 			zoom_out()
 
 func update_hover(mouse_pos: Vector2) -> void:
+	# Store the exact mouse position for rotation calculations
+	last_mouse_position = mouse_pos
+
 	# Convert mouse position to grid coordinates
 	# Mouse pos is in GridEditorControl's local space
 	# Account for GridEditor's position (pan offset) and scale (zoom level)
 	var local_pos = (mouse_pos - position) / scale.x
+
+	# Store exact local position with sub-cell precision for accurate rotation centering
+	last_local_position = local_pos
+
+	# Unlock center position when mouse moves (user is repositioning, not rotating)
+	locked_center_pos = Vector2.ZERO
+
 	var grid_pos = Vector2i(
 		int(local_pos.x / cell_size),
 		int(local_pos.y / cell_size)
@@ -213,27 +242,34 @@ func update_preview() -> void:
 		# Apply rotation FIRST
 		hover_preview.rotation = deg_to_rad(current_rotation)
 
-		# Calculate grid position to center the part at the cursor
-		var adjusted_grid_pos = get_centered_grid_position(hover_position, current_part, current_rotation)
-		var adjusted_base_pos = Vector2(adjusted_grid_pos.x * cell_size, adjusted_grid_pos.y * cell_size)
-
-		# Calculate rotation offset for sprite rendering
+		# Get part size
 		var size = current_part.size
-		var rotation_offset = Vector2.ZERO
-		match current_rotation:
-			90:
-				rotation_offset = Vector2(0, size.x * cell_size)
-			180:
-				rotation_offset = Vector2(size.x * cell_size, size.y * cell_size)
-			270:
-				rotation_offset = Vector2(size.y * cell_size, 0)
 
-		# Set position with both adjustments
-		hover_preview.position = adjusted_base_pos + rotation_offset
+		# Use locked center position if set, otherwise calculate from cursor
+		if locked_center_pos != Vector2.ZERO:
+			# LOCKED: Rotate around the locked center point
+			# Set sprite offset so it rotates around its center
+			hover_preview.offset = Vector2(size.x * cell_size / 2.0, size.y * cell_size / 2.0)
+			# Position sprite at the locked center
+			hover_preview.position = locked_center_pos
+			print("  LOCKED: center=", locked_center_pos, " offset=", hover_preview.offset, " rot=", current_rotation, "°")
+		else:
+			# UNLOCKED: Follow cursor
+			var adjusted_grid_pos = get_centered_grid_position_from_local(last_local_position, current_part, current_rotation)
+			var adjusted_base_pos = Vector2(adjusted_grid_pos.x * cell_size, adjusted_grid_pos.y * cell_size)
 
-		if current_rotation != 0:
-			print("  Preview debug: cursor_grid=", hover_position, " adjusted_grid=", adjusted_grid_pos,
-			      " rot=", current_rotation, "°")
+			# No offset, use rotation offset to position correctly
+			hover_preview.offset = Vector2.ZERO
+			var rotation_offset = Vector2.ZERO
+			match current_rotation:
+				90:
+					rotation_offset = Vector2(0, size.x * cell_size)
+				180:
+					rotation_offset = Vector2(size.x * cell_size, size.y * cell_size)
+				270:
+					rotation_offset = Vector2(size.y * cell_size, 0)
+			hover_preview.position = adjusted_base_pos + rotation_offset
+			print("  UNLOCKED: grid=", adjusted_grid_pos, " base=", adjusted_base_pos, " offset=", rotation_offset, " final=", hover_preview.position)
 
 		# Set color based on valid placement (after position is set)
 		if can_place_current_part():
@@ -269,6 +305,25 @@ func get_centered_grid_position(cursor_pos: Vector2i, part: ShipPart, rotation: 
 	# Convert back to grid coordinates (floor to get integer grid position)
 	return Vector2i(floor(top_left_world.x / cell_size), floor(top_left_world.y / cell_size))
 
+func get_centered_grid_position_from_local(local_pos: Vector2, part: ShipPart, rotation: int) -> Vector2i:
+	"""Calculate grid position to center a rotated part at an exact local position (with sub-cell precision)"""
+	var size = part.size
+	var rotated_size = size
+
+	# Get rotated dimensions
+	if rotation == 90 or rotation == 270:
+		rotated_size = Vector2i(size.y, size.x)  # Swap width and height
+
+	# Calculate rotated size in pixels
+	var rotated_size_pixels = Vector2(rotated_size.x * cell_size, rotated_size.y * cell_size)
+
+	# Calculate top-left corner position to center the part at the exact local position
+	# Subtract half the rotated size (in pixels) from local position
+	var top_left_world = local_pos - rotated_size_pixels / 2.0
+
+	# Convert back to grid coordinates (floor to get integer grid position)
+	return Vector2i(floor(top_left_world.x / cell_size), floor(top_left_world.y / cell_size))
+
 func get_corridor_preview_sprite(pos: Vector2i) -> Texture2D:
 	# Simulate what the corridor would look like if placed here
 	# Check what's currently at this position and neighboring cells
@@ -281,8 +336,15 @@ func can_place_current_part() -> bool:
 
 	var placement = PartPlacement.new()
 	placement.part = current_part
-	# Use centered grid position for rotated parts
-	placement.grid_position = get_centered_grid_position(hover_position, current_part, current_rotation)
+	# Calculate grid position from locked center or cursor
+	if locked_center_pos != Vector2.ZERO:
+		# Calculate grid position from locked center
+		var size = current_part.size
+		var half_size = Vector2(size.x * cell_size / 2.0, size.y * cell_size / 2.0)
+		var top_left = locked_center_pos - half_size
+		placement.grid_position = Vector2i(int(floor(top_left.x / cell_size)), int(floor(top_left.y / cell_size)))
+	else:
+		placement.grid_position = get_centered_grid_position_from_local(last_local_position, current_part, current_rotation)
 	placement.rotation = current_rotation
 
 	return ship_definition.can_place_part(placement)
@@ -304,8 +366,15 @@ func paint_part_at_hover() -> void:
 	if hover_position.x < 0 or hover_position.y < 0:
 		return
 
-	# Use centered grid position for rotated parts
-	var centered_pos = get_centered_grid_position(hover_position, current_part, current_rotation)
+	# Calculate grid position from locked center or cursor
+	var centered_pos: Vector2i
+	if locked_center_pos != Vector2.ZERO:
+		var size = current_part.size
+		var half_size = Vector2(size.x * cell_size / 2.0, size.y * cell_size / 2.0)
+		var top_left = locked_center_pos - half_size
+		centered_pos = Vector2i(int(floor(top_left.x / cell_size)), int(floor(top_left.y / cell_size)))
+	else:
+		centered_pos = get_centered_grid_position_from_local(last_local_position, current_part, current_rotation)
 
 	# Only paint if we've moved to a new cell
 	if centered_pos == last_painted_cell:
@@ -339,8 +408,15 @@ func handle_click(_mouse_pos: Vector2) -> void:
 		place_tile(hover_position, current_tile)
 
 	elif current_tool == "part" and current_part:
-		# Use centered grid position for rotated parts
-		var centered_pos = get_centered_grid_position(hover_position, current_part, current_rotation)
+		# Calculate grid position from locked center or cursor
+		var centered_pos: Vector2i
+		if locked_center_pos != Vector2.ZERO:
+			var size = current_part.size
+			var half_size = Vector2(size.x * cell_size / 2.0, size.y * cell_size / 2.0)
+			var top_left = locked_center_pos - half_size
+			centered_pos = Vector2i(int(floor(top_left.x / cell_size)), int(floor(top_left.y / cell_size)))
+		else:
+			centered_pos = get_centered_grid_position_from_local(last_local_position, current_part, current_rotation)
 		place_part(centered_pos, current_part)
 
 	elif current_tool == "erase":

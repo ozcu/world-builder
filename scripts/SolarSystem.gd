@@ -10,15 +10,20 @@ extends Node2D
 @export var max_zoom: float = 5.0
 
 @onready var camera: Camera2D = $Camera2D
-@onready var sun: Node2D = $Sun2D
 @onready var starship: Node2D = $Starship
 
+var sun: Node2D = null
 var orbital_bodies: Array[Node2D] = []
 var camera_velocity: Vector2 = Vector2.ZERO
+var camera_follow_starship: bool = true  # Auto-follow by default
 
 func _ready() -> void:
-	if sun:
-		sun_position = sun.position
+	# Find sun in Planets node
+	var planets_node = get_node_or_null("Planets")
+	if planets_node:
+		sun = planets_node.get_node_or_null("Sun2D")
+		if sun:
+			sun_position = sun.position
 
 	# Collect orbital bodies
 	for child in get_children():
@@ -29,6 +34,10 @@ func _ready() -> void:
 	# call_deferred("_adjust_camera")
 
 func _process(delta: float) -> void:
+	# Make camera follow starship if enabled
+	if camera_follow_starship and starship and is_instance_valid(starship):
+		camera.position = starship.global_position
+
 	# Always handle camera input
 	_handle_camera_input(delta)
 
@@ -91,7 +100,7 @@ func _adjust_camera() -> void:
 	camera.position = (min_pos + max_pos) / 2.0
 
 func _handle_camera_input(delta: float) -> void:
-	# WASD camera movement
+	# WASD camera movement (disables auto-follow)
 	camera_velocity = Vector2.ZERO
 
 	if Input.is_action_pressed("ui_text_indent"):  # D key
@@ -111,6 +120,7 @@ func _handle_camera_input(delta: float) -> void:
 
 	# Normalize and apply camera speed
 	if camera_velocity.length() > 0:
+		camera_follow_starship = false  # Disable auto-follow when manually controlling
 		camera_velocity = camera_velocity.normalized() * camera_speed
 		# Adjust for zoom level (move faster when zoomed out)
 		camera.position += camera_velocity * delta / camera.zoom.x

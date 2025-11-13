@@ -101,15 +101,15 @@ placement.grid_position = Vector2i(9, 8)
 placement.horizontal = true
 
 if ship.can_place_part(placement):
-    ship.add_part(placement)
+	ship.add_part(placement)
 
 # Validate
 var result = ship.validate()
 if result.valid:
-    print("Ship is valid!")
+	print("Ship is valid!")
 else:
-    for error in result.errors:
-        print("Error: ", error)
+	for error in result.errors:
+		print("Error: ", error)
 
 # Export
 var json = ship.to_json()
