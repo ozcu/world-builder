@@ -2,8 +2,8 @@
 extends RigidBody2D
 
 @export var cruise_speed: float = 80.0
-@export var thrust_force: float = 5000.0
-@export var rotation_torque: float = 10000.0
+@export var thrust_force: float = 9000.0
+@export var rotation_torque: float = 80000.0
 @export var arrival_distance: float = 200.0
 @export var separation_distance: float = 200.0
 @export var separation_force_multiplier: float = 3.0
@@ -21,9 +21,9 @@ func _ready() -> void:
 	# Configure RigidBody2D for space physics
 	gravity_scale = 0.0
 	linear_damp = 0.8  # More drag for NPCs
-	angular_damp = 2.0
+	angular_damp = 0.8
 	lock_rotation = false  # Allow physics-based rotation
-	mass = 500.0
+	mass = 50.0
 	contact_monitor = true
 	max_contacts_reported = 4
 

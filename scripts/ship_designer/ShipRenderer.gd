@@ -62,7 +62,7 @@ func render_ship() -> void:
 		)
 
 		print("  Rendering part '", placement.part.part_name, "' at grid ", placement.grid_position,
-		      " rotation ", placement.rotation, "°, base pixel pos ", base_position)
+			  " rotation ", placement.rotation, "°, base pixel pos ", base_position)
 
 		var sprite = Sprite2D.new()
 		sprite.texture = placement.part.sprite

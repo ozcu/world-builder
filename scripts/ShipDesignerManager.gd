@@ -148,5 +148,14 @@ func apply_design_to_starship() -> void:
 	if starship.has_method("apply_ship_design"):
 		starship.apply_ship_design(ship_def)
 		print("ShipDesignerManager: Applied ship design to Starship")
+		
+		# Apply mass
+		if ship_def.metadata.has("total_mass"):
+			starship.mass = ship_def.metadata["total_mass"]
+			print("Starship mass set to: ", starship.mass)
+
+		# Notify Hud
+		if starship.has_signal("stats_changed"):
+			starship.emit_signal("stats_changed")
 	else:
 		push_warning("ShipDesignerManager: Starship doesn't have apply_ship_design() method")

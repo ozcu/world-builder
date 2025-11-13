@@ -1,24 +1,23 @@
 [gd_scene load_steps=4 format=3 uid="uid://dimkviojal2v7"]
 
-[ext_resource type="Script" uid="uid://cq5h8m9n3kptx" path="res://scripts/Starship.gd" id="1_starship"]
+[ext_resource type="Script" uid="uid://cq5h8nan3kptx" path="res://scripts/Starship.gd" id="1_starship"]
 [ext_resource type="Texture2D" uid="uid://bqpjbqetjeixx" path="res://assets/textures/player-ship.png" id="2_texture"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qmy6f"]
-size = Vector2(71, 252)
+size = Vector2(77, 247)
 
 [node name="Starship" type="RigidBody2D"]
-mass = 1000.0
+mass = 50.0
 gravity_scale = 0.0
-lock_rotation = false
-linear_damp = 0.1
-angular_damp = 0.8
 contact_monitor = true
 max_contacts_reported = 4
+linear_damp = 0.1
+angular_damp = 1.5
 script = ExtResource("1_starship")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_texture")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-4.5, 0)
+position = Vector2(-1.5, 2.5)
 shape = SubResource("RectangleShape2D_qmy6f")

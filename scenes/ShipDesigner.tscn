@@ -1,10 +1,10 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3 uid="uid://bkbqds0dikmcr"]
 
-[ext_resource type="Script" path="res://scripts/ship_designer/ShipDesigner.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/ship_designer/GridEditor.gd" id="2"]
-[ext_resource type="Script" path="res://scripts/ship_designer/TilePalette.gd" id="3"]
-[ext_resource type="Script" path="res://scripts/ship_designer/PartPalette.gd" id="4"]
-[ext_resource type="Script" path="res://scripts/ship_designer/StatsPanel.gd" id="5"]
+[ext_resource type="Script" uid="uid://c4ellxq0fnkxh" path="res://scripts/ship_designer/ShipDesigner.gd" id="1"]
+[ext_resource type="Script" uid="uid://dt0ct21c4klvl" path="res://scripts/ship_designer/GridEditor.gd" id="2"]
+[ext_resource type="Script" uid="uid://djaf4b1ig0qrs" path="res://scripts/ship_designer/TilePalette.gd" id="3"]
+[ext_resource type="Script" uid="uid://n08au7mlxkkm" path="res://scripts/ship_designer/PartPalette.gd" id="4"]
+[ext_resource type="Script" uid="uid://ba71bcv0fksqe" path="res://scripts/ship_designer/StatsPanel.gd" id="5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.1, 0.1, 0.12, 1)
@@ -39,17 +39,17 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TopPanel" type="PanelContainer" parent="MainLayout"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="Toolbar" type="HBoxContainer" parent="MainLayout/TopPanel"]
 layout_mode = 2
 
 [node name="ShipNameLabel" type="Label" parent="MainLayout/TopPanel/Toolbar"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 text = "Ship: New Ship"
-custom_minimum_size = Vector2(200, 0)
 
 [node name="Separator1" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
@@ -73,8 +73,8 @@ theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
 
 [node name="EraseButton" type="Button" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
-text = "Erase Mode"
 toggle_mode = true
+text = "Erase Mode"
 
 [node name="Separator3" type="VSeparator" parent="MainLayout/TopPanel/Toolbar"]
 layout_mode = 2
@@ -93,8 +93,8 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="LeftPanel" type="PanelContainer" parent="MainLayout/ContentArea"]
-layout_mode = 2
 custom_minimum_size = Vector2(160, 300)
+layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
@@ -114,25 +114,25 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="CenterContainer" type="PanelContainer" parent="MainLayout/ContentArea/RightSplit"]
-layout_mode = 2
 custom_minimum_size = Vector2(400, 400)
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="GridEditorControl" type="Control" parent="MainLayout/ContentArea/RightSplit/CenterContainer"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-clip_contents = true
 
 [node name="GridEditor" type="Node2D" parent="MainLayout/ContentArea/RightSplit/CenterContainer/GridEditorControl"]
 script = ExtResource("2")
 
 [node name="RightPanel" type="PanelContainer" parent="MainLayout/ContentArea/RightSplit"]
-layout_mode = 2
 custom_minimum_size = Vector2(160, 300)
+layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
@@ -147,8 +147,8 @@ size_flags_vertical = 3
 script = ExtResource("4")
 
 [node name="BottomPanel" type="PanelContainer" parent="MainLayout"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="StatsPanel" type="HBoxContainer" parent="MainLayout/BottomPanel"]
